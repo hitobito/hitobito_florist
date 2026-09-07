@@ -3,4 +3,112 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito_florist.
 
+
 it:
+  activerecord:
+    models:
+
+      ### GROUPS
+
+      group/dachverband:
+        one: Dachverband
+        other: Dachverbände
+
+      group/dachverband_kontakte:
+        one: Kontakte
+        other: Kontakte
+
+      group/dachverband_abonnemente:
+        one: Abonnemente
+        other: Abonnemente
+
+      group/sektion:
+        one: Sektion
+        other: Sektionen
+
+
+      ### ROLES
+
+      group/dachverband/administrator:
+        one: "Administrator:in"
+        other: "Administrator:innen"
+
+      group/dachverband/mitarbeiter:
+        one: "Mitarbeiter:in"
+        other: "Mitarbeiter:innen"
+
+      group/dachverband_kontakte/kontakt:
+        one: Kontakt
+        other: Kontakte
+
+      group/dachverband_abonnemente/jahresabo_schweiz:
+        one: Jahresabo Schweiz
+        other: Jahresabo Schweiz
+
+      group/dachverband_abonnemente/jahresabo_mitglied:
+        one: Jahresabo Mitglied
+        other: Jahresabo Mitglied
+
+      group/dachverband_abonnemente/jahresabo_europa:
+        one: Jahresabo Europa
+        other: Jahresabo Europa
+
+      group/dachverband_abonnemente/probeabo:
+        one: Probeabo
+        other: Probeabo
+
+      group/dachverband_abonnemente/lehrlingsabo:
+        one: Lehrlingsabo
+        other: Lehrlingsabo
+
+      group/dachverband_abonnemente/gratisabo:
+        one: Gratisabo
+        other: Gratisabo
+
+      group/dachverband_abonnemente/lehrgang_floristik:
+        one: Lehrgang Floristik
+        other: Lehrgang Floristik
+
+      group/dachverband_abonnemente/b_mplus:
+        one: BM-plus
+        other: BM-plus
+
+      group/sektion/aktivmitglied:
+        one: Aktivmitglied
+        other: Aktivmitglieder
+
+      group/sektion/berufsmitglied:
+        one: Berufsmitglied
+        other: Berufsmitglieder
+
+      group/sektion/berufsmitgliedplus:
+        one: Berufsmitglied plus
+        other: Berufsmitglieder plus
+
+      group/sektion/start_up:
+        one: StartUp
+        other: StartUps
+
+      group/sektion/ehrenmitglied:
+        one: Ehrenmitglied
+        other: Ehrenmitglieder
+
+      group/sektion/filiale:
+        one: Filiale
+        other: Filialen
+
+      group/sektion/entdecker:
+        one: Entdecker
+        other: Entdecker
+
+      group/sektion/partnermitglied:
+        one: Partnermitglied
+        other: Partnermitglieder
+
+      group/sektion/passivmitglied:
+        one: Passivmitglied
+        other: Passivmitglieder
+
+      group/sektion/ex_mitglied:
+        one: Ex Mitglied
+        other: Ex Mitglieder
