@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[o:hitobito:p:hitobito_florist:r:wagon]
+file_filter = config/locales/florist.<lang>.yml
+source_file = config/locales/florist.de.yml
+source_lang = de
+type        = YML

@@ -1,0 +1,87 @@
+#  Copyright (c) 2012-2026, florist.ch. This file is part of
+#  hitobito_florist and licensed under the Affero General Public License version 3
+#  or later. See the COPYING file at the top-level directory or at
+#  https://github.com/hitobito/hitobito_florist.
+
+root:
+  parent:
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 1
+  rgt: 22
+  name: florist.ch
+  type: Group::Dachverband
+  email: lyndon@hitobito.example.com
+  street: Schellingstr.
+  housenumber: '8'
+  zip_code: '4692'
+  town: Charleenhagen
+aargau:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:aargau)%>"
+  lft: 2
+  rgt: 3
+  name: Aargau
+  type: Group::Sektion
+nordwestschweiz:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:nordwestschweiz)%>"
+  lft: 10
+  rgt: 11
+  name: Nordwestschweiz
+  type: Group::Sektion
+mittelland_wallis:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:mittelland_wallis)%>"
+  lft: 8
+  rgt: 9
+  name: Mittelland/Wallis
+  type: Group::Sektion
+zentralschweiz:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:zentralschweiz)%>"
+  lft: 18
+  rgt: 19
+  name: Zentralschweiz
+  type: Group::Sektion
+ostschweiz:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:ostschweiz)%>"
+  lft: 12
+  rgt: 13
+  name: Ostschweiz
+  type: Group::Sektion
+zuerich:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:zuerich)%>"
+  lft: 20
+  rgt: 21
+  name: Zürich
+  type: Group::Sektion
+ticino:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:ticino)%>"
+  lft: 16
+  rgt: 17
+  name: Ticino
+  type: Group::Sektion
+suisse_romande:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:suisse_romande)%>"
+  lft: 14
+  rgt: 15
+  name: Suisse Romande
+  type: Group::Sektion
+kontakte:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 6
+  rgt: 7
+  name: Kontakte
+  type: Group::DachverbandKontakte
+abonnemente:
+  parent: root
+  layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
+  lft: 4
+  rgt: 5
+  name: Abonnemente
+  type: Group::DachverbandAbonnemente
