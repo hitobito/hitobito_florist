@@ -31,15 +31,16 @@ $white: #fff !default;
 
 // Colors
 // ----------------------------
-$blue: $florist_rose !default;
-$blue-dark: $florist_rose_dark !default;
+$blue: $florist_green !default;
+$blue-dark: $florist_green_dark !default;
+
 $green: $florist_green !default;
 $green-dark: $florist_green_dark !default;
 
 $orange: #DC795B;
 $orange-dark: #C75B3B;
-$purple: $florist_rose;
-$purple-dark: $florist_rose_dark;
+$purple: $florist_green;
+$purple-dark: $florist_green_dark;
 
 $text-color: $black !default;
 $border-color: $gray-light !default;
@@ -52,13 +53,13 @@ $body-background: $white;
 
 $focus-color: $florist_rose_dark;
 $shadow-color: darken($page-background, 10%);
-$link-color: $florist_rose !default;
-$link-hover-color: $florist_rose_dark !default;
+$link-color: $florist_green !default;
+$link-hover-color: $florist_green_dark !default;
 
 $footer-color: $black;
-$footer-color-hover: $florist_rose_dark;
+$footer-color-hover: $florist_green_dark;
 
-$table-color-hover: lighten($florist_rose, 40%);
+$table-color-hover: lighten($florist_green, 40%);
 
 // Typography
 // -------------------------
