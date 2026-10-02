@@ -6,5 +6,5 @@
 #  https://github.com/hitobito/hitobito_florist.
 
 module HitobitoFlorist
-  VERSION = "0.0.1"
+  VERSION = "2.10.12"
 end
