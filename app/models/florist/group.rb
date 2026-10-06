@@ -8,6 +8,18 @@
 module Florist::Group
   extend ActiveSupport::Concern
 
+  SECTION_FEE_ATTRS = [
+    :section_aktivmitglied_base_fee,
+    :section_berufsmitglied_base_fee,
+    :section_partnermitglied_base_fee,
+    :section_passivmitglied_base_fee,
+    :section_full_time_employee_fee,
+    :section_part_time_employee_fee,
+    :section_branch_fee,
+    :section_credit_gv_visit,
+    :section_advertising_fee
+  ].freeze
+
   included do
     # Define additional used attributes
     # self.used_attributes += [:website, :bank_account, :description]
