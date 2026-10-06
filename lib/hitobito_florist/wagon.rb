@@ -22,6 +22,11 @@ module HitobitoFlorist
     config.to_prepare do
       # extend application classes here
       Group.include Florist::Group
+      Person.include Florist::Person
+
+      PersonAbility.include Florist::PersonAbility
+
+      PeopleController.include Florist::PeopleController
     end
 
     initializer "florist.add_settings" do |_app|

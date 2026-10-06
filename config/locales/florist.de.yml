@@ -6,6 +6,15 @@
 
 de:
   activerecord:
+    attributes:
+      person:
+        full_time_employees: Anzahl Vollzeitangestellte
+        part_time_employees: Anzahl Teilzeitangestellte
+        apprentices: Anzahl Lernende
+        branches: Anzahl Filialen
+        visited_gv_dachverband: GV Besuch Dachverband
+        visited_gv_sektion: GV Besuch Sektion
+
     models:
 
       ### GROUPS
@@ -28,6 +37,10 @@ de:
 
 
       ### ROLES
+
+      group/sektion/sektion:
+        one: Sektion
+        other: Sektionen
 
       group/dachverband/administrator:
         one: "Administrator:in"

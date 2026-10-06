@@ -19,17 +19,117 @@ if root.address.blank?
   end
 end
 
-[
-  "Aargau",
-  "Nordwestschweiz",
-  "Mittelland/Wallis",
-  "Zentralschweiz",
-  "Ostschweiz",
-  "Zürich",
-  "Ticino",
-  "Suisse Romande"
-].each do |name|
+# Fee attributes of the sections, see https://github.com/hitobito/hitobito_florist/issues/5
+section_fees = {
+  "Aargau" => {
+    section_aktivmitglied_base_fee: 200,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 50,
+    section_passivmitglied_base_fee: 50,
+    section_full_time_employee_fee: 50,
+    section_part_time_employee_fee: 25,
+    section_branch_fee: 50,
+    section_credit_gv_visit: -100,
+    section_advertising_fee: 0,
+    section_fee_account: "2291",
+    exclude_from_yearly_membership_invoicing: false
+  },
+  "Nordwestschweiz" => {
+    section_aktivmitglied_base_fee: 100,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 0,
+    section_passivmitglied_base_fee: 0,
+    section_full_time_employee_fee: 40,
+    section_part_time_employee_fee: 20,
+    section_branch_fee: 20,
+    section_credit_gv_visit: 0,
+    section_advertising_fee: 0,
+    section_fee_account: "2292",
+    exclude_from_yearly_membership_invoicing: true
+  },
+  "Mittelland/Wallis" => {
+    section_aktivmitglied_base_fee: 200,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 200,
+    section_passivmitglied_base_fee: 50,
+    section_full_time_employee_fee: 40,
+    section_part_time_employee_fee: 20,
+    section_branch_fee: 0,
+    section_credit_gv_visit: -100,
+    section_advertising_fee: 0,
+    section_fee_account: "2293",
+    exclude_from_yearly_membership_invoicing: false
+  },
+  "Zentralschweiz" => {
+    section_aktivmitglied_base_fee: 220,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 50,
+    section_passivmitglied_base_fee: 50,
+    section_full_time_employee_fee: 40,
+    section_part_time_employee_fee: 25,
+    section_branch_fee: 60,
+    section_credit_gv_visit: -50,
+    section_advertising_fee: 100,
+    section_fee_account: "2294",
+    exclude_from_yearly_membership_invoicing: true
+  },
+  "Ostschweiz" => {
+    section_aktivmitglied_base_fee: 150,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 100,
+    section_passivmitglied_base_fee: 40,
+    section_full_time_employee_fee: 30,
+    section_part_time_employee_fee: 15,
+    section_branch_fee: 0,
+    section_credit_gv_visit: -50,
+    section_advertising_fee: 0,
+    section_fee_account: "2295",
+    exclude_from_yearly_membership_invoicing: false
+  },
+  "Zürich" => {
+    section_aktivmitglied_base_fee: 150,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 50,
+    section_passivmitglied_base_fee: 40,
+    section_full_time_employee_fee: 40,
+    section_part_time_employee_fee: 20,
+    section_branch_fee: 50,
+    section_credit_gv_visit: -50,
+    section_advertising_fee: 60,
+    section_fee_account: "2296",
+    exclude_from_yearly_membership_invoicing: false
+  },
+  "Ticino" => {
+    section_aktivmitglied_base_fee: 100,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 100,
+    section_passivmitglied_base_fee: 100,
+    section_full_time_employee_fee: 40,
+    section_part_time_employee_fee: 20,
+    section_branch_fee: 50,
+    section_credit_gv_visit: 0,
+    section_advertising_fee: 0,
+    section_fee_account: "2297",
+    exclude_from_yearly_membership_invoicing: false
+  },
+  "Suisse Romande" => {
+    section_aktivmitglied_base_fee: 255,
+    section_berufsmitglied_base_fee: 50,
+    section_partnermitglied_base_fee: 100,
+    section_passivmitglied_base_fee: 40,
+    section_full_time_employee_fee: 45,
+    section_part_time_employee_fee: 25,
+    section_branch_fee: 50,
+    section_credit_gv_visit: -50,
+    section_advertising_fee: 0,
+    section_fee_account: "2298",
+    exclude_from_yearly_membership_invoicing: false
+  }
+}
+
+section_fees.each do |name, attrs|
   Group::Sektion.seed_once(:name, parent_id: root.id, name: name)
+  Group::Sektion.find_by(parent_id: root.id, name: name).update!(attrs)
 end
 
 Group.rebuild!

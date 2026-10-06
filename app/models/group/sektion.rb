@@ -40,6 +40,10 @@ class Group::Sektion < ::Group
   class ExMitglied < ::Role
   end
 
-  roles Aktivmitglied, Berufsmitglied, Berufsmitgliedplus, StartUp, Ehrenmitglied, Filiale,
-    Entdecker, Partnermitglied, Passivmitglied, ExMitglied
+  class Sektion < ::Role
+    self.permissions = [:layer_full]
+  end
+
+  roles Aktivmitglied, Berufsmitglied, Berufsmitgliedplus, StartUp, Ehrenmitglied,
+    Filiale, Entdecker, Partnermitglied, Passivmitglied, ExMitglied, Sektion
 end
