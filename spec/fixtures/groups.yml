@@ -22,6 +22,17 @@ aargau:
   rgt: 3
   name: Aargau
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 200
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 50
+  section_passivmitglied_base_fee: 50
+  section_full_time_employee_fee: 50
+  section_part_time_employee_fee: 25
+  section_branch_fee: 50
+  section_credit_gv_visit: -100
+  section_advertising_fee: 0
+  section_fee_account: '2291'
+  exclude_from_yearly_membership_invoicing: false
 nordwestschweiz:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:nordwestschweiz)%>"
@@ -29,6 +40,17 @@ nordwestschweiz:
   rgt: 11
   name: Nordwestschweiz
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 100
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 0
+  section_passivmitglied_base_fee: 0
+  section_full_time_employee_fee: 40
+  section_part_time_employee_fee: 20
+  section_branch_fee: 20
+  section_credit_gv_visit: 0
+  section_advertising_fee: 0
+  section_fee_account: '2292'
+  exclude_from_yearly_membership_invoicing: true
 mittelland_wallis:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:mittelland_wallis)%>"
@@ -36,6 +58,17 @@ mittelland_wallis:
   rgt: 9
   name: Mittelland/Wallis
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 200
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 200
+  section_passivmitglied_base_fee: 50
+  section_full_time_employee_fee: 40
+  section_part_time_employee_fee: 20
+  section_branch_fee: 0
+  section_credit_gv_visit: -100
+  section_advertising_fee: 0
+  section_fee_account: '2293'
+  exclude_from_yearly_membership_invoicing: false
 zentralschweiz:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:zentralschweiz)%>"
@@ -43,6 +76,17 @@ zentralschweiz:
   rgt: 19
   name: Zentralschweiz
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 220
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 50
+  section_passivmitglied_base_fee: 50
+  section_full_time_employee_fee: 40
+  section_part_time_employee_fee: 25
+  section_branch_fee: 60
+  section_credit_gv_visit: -50
+  section_advertising_fee: 100
+  section_fee_account: '2294'
+  exclude_from_yearly_membership_invoicing: true
 ostschweiz:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:ostschweiz)%>"
@@ -50,6 +94,17 @@ ostschweiz:
   rgt: 13
   name: Ostschweiz
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 150
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 100
+  section_passivmitglied_base_fee: 40
+  section_full_time_employee_fee: 30
+  section_part_time_employee_fee: 15
+  section_branch_fee: 0
+  section_credit_gv_visit: -50
+  section_advertising_fee: 0
+  section_fee_account: '2295'
+  exclude_from_yearly_membership_invoicing: false
 zuerich:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:zuerich)%>"
@@ -57,6 +112,17 @@ zuerich:
   rgt: 21
   name: Zürich
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 150
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 50
+  section_passivmitglied_base_fee: 40
+  section_full_time_employee_fee: 40
+  section_part_time_employee_fee: 20
+  section_branch_fee: 50
+  section_credit_gv_visit: -50
+  section_advertising_fee: 60
+  section_fee_account: '2296'
+  exclude_from_yearly_membership_invoicing: false
 ticino:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:ticino)%>"
@@ -64,6 +130,17 @@ ticino:
   rgt: 17
   name: Ticino
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 100
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 100
+  section_passivmitglied_base_fee: 100
+  section_full_time_employee_fee: 40
+  section_part_time_employee_fee: 20
+  section_branch_fee: 50
+  section_credit_gv_visit: 0
+  section_advertising_fee: 0
+  section_fee_account: '2297'
+  exclude_from_yearly_membership_invoicing: false
 suisse_romande:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:suisse_romande)%>"
@@ -71,6 +148,17 @@ suisse_romande:
   rgt: 15
   name: Suisse Romande
   type: Group::Sektion
+  section_aktivmitglied_base_fee: 255
+  section_berufsmitglied_base_fee: 50
+  section_partnermitglied_base_fee: 100
+  section_passivmitglied_base_fee: 40
+  section_full_time_employee_fee: 45
+  section_part_time_employee_fee: 25
+  section_branch_fee: 50
+  section_credit_gv_visit: -50
+  section_advertising_fee: 0
+  section_fee_account: '2298'
+  exclude_from_yearly_membership_invoicing: false
 kontakte:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"
