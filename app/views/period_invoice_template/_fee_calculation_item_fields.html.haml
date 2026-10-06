@@ -1,0 +1,12 @@
+-#  Copyright (c) 2026, florist.ch. This file is part of
+-#  hitobito_florist and licensed under the Affero General Public License version 3
+-#  or later. See the COPYING file at the top-level directory or at
+-#  https://github.com/hitobito/hitobito_florist.
+
+-# This intentionally does not render the shared_item_fields partial: name, unit cost,
+-# account and cost center of the generated items all come from settings.yml.
+
+%h3= f.object.class.model_name.human
+%p.form-text= t(".explanation")
+= f.hidden_field :name, value: f.object.class.model_name.human
+= f.hidden_field :unit_cost, name: f.object_name + "[dynamic_cost_parameters][unit_cost]", value: 0

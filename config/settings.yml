@@ -45,3 +45,285 @@ additional_email:
 additional_address:
   custom_label:
     enabled: false
+
+groups:
+  period_invoice_templates:
+    enabled: true
+    item_classes:
+      "PeriodInvoiceTemplate::FeeCalculationItem":
+
+florist:
+  membership_fees:
+    dachverband:
+      - name: base_fee_aktivmitglied_max_1_employee
+        item_type: "Invoice::EmployeeCountConditionalItem"
+        account: "3001"
+        cost_center: "310"
+        dynamic_cost_parameters:
+          unit_cost: 340
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          min_employees: 0
+          max_employees: 1
+
+      - name: pr_fee_aktivmitglied_max_1_employee
+        item_type: "Invoice::EmployeeCountConditionalItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 25.5 # 7.5% of 340
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          min_employees: 0
+          max_employees: 1
+
+      - name: base_fee_aktivmitglied_max_2_employees
+        item_type: "Invoice::EmployeeCountConditionalItem"
+        account: "3001"
+        cost_center: "310"
+        dynamic_cost_parameters:
+          unit_cost: 440
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          min_employees: 2
+          max_employees: 2
+
+      - name: pr_fee_aktivmitglied_max_2_employees
+        item_type: "Invoice::EmployeeCountConditionalItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 33 # 7.5% of 440
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          min_employees: 2
+          max_employees: 2
+
+      - name: base_fee_aktivmitglied_min_3_employees
+        item_type: "Invoice::EmployeeCountConditionalItem"
+        account: "3001"
+        cost_center: "310"
+        dynamic_cost_parameters:
+          unit_cost: 540
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          min_employees: 3
+
+      - name: pr_fee_aktivmitglied_min_3_employees
+        item_type: "Invoice::EmployeeCountConditionalItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 40.5 # 7.5% of 540
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          min_employees: 3
+
+      - name: fee_per_full_time_employee
+        item_type: "Invoice::FieldSumItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 130
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: full_time_employees
+
+      - name: pr_fee_per_full_time_employee
+        item_type: "Invoice::FieldSumItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 9.75 # 7.5% of 130
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: full_time_employees
+
+      - name: fee_per_part_time_employee
+        item_type: "Invoice::FieldSumItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 72
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: part_time_employees
+
+      - name: pr_fee_per_part_time_employee
+        item_type: "Invoice::FieldSumItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 5.4 # 7.5% of 72
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: part_time_employees
+
+      - name: fee_per_branch
+        item_type: "Invoice::FieldSumItem"
+        account: "3001"
+        cost_center: "110"
+        dynamic_cost_parameters:
+          unit_cost: 150
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: branches
+
+      - name: pr_fee_per_branch
+        item_type: "Invoice::FieldSumItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: 11.25 # 7.5% of 150
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: branches
+
+      - name: subscription_florist
+        item_type: "Invoice::FilterCountItem"
+        vat_rate: 2.6
+        account: "3460"
+        cost_center: "700"
+        dynamic_cost_parameters:
+          unit_cost: 115
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+
+      - name: credit_per_apprentice
+        item_type: "Invoice::FieldSumItem"
+        account: "3001"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: -60
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: apprentices
+
+      - name: credit_gv_dachverband
+        item_type: "Invoice::FilterCountItem"
+        account: "3020"
+        cost_center: "100"
+        dynamic_cost_parameters:
+          unit_cost: -100
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          where:
+            people:
+              visited_gv_dachverband: true
+
+      - name: base_fee_berufsmitglied
+        item_type: "Invoice::FilterCountItem"
+        account: "3003"
+        cost_center: "310"
+        dynamic_cost_parameters:
+          unit_cost: 75
+          relevant_role_types:
+            - Group::Sektion::Berufsmitglied
+
+      - name: base_fee_berufsmitgliedplus
+        item_type: "Invoice::FilterCountItem"
+        account: "3005"
+        cost_center: "310"
+        dynamic_cost_parameters:
+          unit_cost: 50
+          relevant_role_types:
+            - Group::Sektion::Berufsmitgliedplus
+
+      - name: subscription_fachmagazin
+        item_type: "Invoice::FilterCountItem"
+        vat_rate: 2.6
+        account: "3460"
+        cost_center: "700"
+        dynamic_cost_parameters:
+          unit_cost: 77.95
+          relevant_role_types:
+            - Group::Sektion::Berufsmitgliedplus
+
+      - name: base_fee_partnermitglied
+        item_type: "Invoice::FilterCountItem"
+        account: "3004"
+        cost_center: "310"
+        dynamic_cost_parameters:
+          unit_cost: 150
+          relevant_role_types:
+            - Group::Sektion::Partnermitglied
+
+      - name: base_fee_passivmitglied
+        item_type: "Invoice::FilterCountItem"
+        account: "3002"
+        cost_center: "310"
+        dynamic_cost_parameters:
+          unit_cost: 50
+          relevant_role_types:
+            - Group::Sektion::Passivmitglied
+
+    sections:
+      - name: section_base_fee_aktivmitglied
+        item_type: "Invoice::FilterCountItem"
+        dynamic_cost_parameters:
+          unit_cost: section_aktivmitglied_base_fee
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+
+      - name: section_fee_per_full_time_employee
+        item_type: "Invoice::FieldSumItem"
+        dynamic_cost_parameters:
+          unit_cost: section_full_time_employee_fee
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: full_time_employees
+
+      - name: section_fee_per_part_time_employee
+        item_type: "Invoice::FieldSumItem"
+        dynamic_cost_parameters:
+          unit_cost: section_part_time_employee_fee
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: part_time_employees
+
+      - name: section_fee_per_branch
+        item_type: "Invoice::FieldSumItem"
+        dynamic_cost_parameters:
+          unit_cost: section_branch_fee
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          field: branches
+
+      - name: section_credit_gv_sektion
+        item_type: "Invoice::FilterCountItem"
+        dynamic_cost_parameters:
+          unit_cost: section_credit_gv_visit
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+          where:
+            people:
+              visited_gv_sektion: true
+
+      - name: section_advertising_fee
+        item_type: "Invoice::FilterCountItem"
+        dynamic_cost_parameters:
+          unit_cost: section_advertising_fee
+          relevant_role_types:
+            - Group::Sektion::Aktivmitglied
+
+      - name: section_base_fee_berufsmitglied
+        item_type: "Invoice::FilterCountItem"
+        dynamic_cost_parameters:
+          unit_cost: section_berufsmitglied_base_fee
+          relevant_role_types:
+            - Group::Sektion::Berufsmitglied
+            - Group::Sektion::Berufsmitgliedplus
+
+      - name: section_base_fee_partnermitglied
+        item_type: "Invoice::FilterCountItem"
+        dynamic_cost_parameters:
+          unit_cost: section_partnermitglied_base_fee
+          relevant_role_types:
+            - Group::Sektion::Partnermitglied
+
+      - name: section_base_fee_passivmitglied
+        item_type: "Invoice::FilterCountItem"
+        dynamic_cost_parameters:
+          unit_cost: section_passivmitglied_base_fee
+          relevant_role_types:
+            - Group::Sektion::Passivmitglied
