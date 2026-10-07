@@ -6,7 +6,22 @@
 
 de:
   activerecord:
+    attributes:
+      person:
+        full_time_employees: Anzahl Vollzeitangestellte
+        part_time_employees: Anzahl Teilzeitangestellte
+        apprentices: Anzahl Lernende
+        branches: Anzahl Filialen
+        visited_gv_dachverband: GV Besuch Dachverband
+        visited_gv_sektion: GV Besuch Sektion
+
     models:
+
+      ### INVOICES
+
+      period_invoice_template/fee_calculation_item:
+        one: Mitgliedschaftsbeiträge
+        other: Mitgliedschaftsbeiträge
 
       ### GROUPS
 
@@ -28,6 +43,10 @@ de:
 
 
       ### ROLES
+
+      group/sektion/sektion:
+        one: Sektion
+        other: Sektionen
 
       group/dachverband/administrator:
         one: "Administrator:in"
@@ -112,3 +131,39 @@ de:
       group/sektion/ex_mitglied:
         one: Ex Mitglied
         other: Ex Mitglieder
+
+  period_invoice_template:
+    fee_calculation_item_fields:
+      explanation: Generiert die Rechnungsposten des Dachverbands sowie der Sektionen.
+
+  florist:
+    membership_fee_items:
+      base_fee_aktivmitglied_max_1_employee: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) bis 1 Mitarbeiter
+      pr_fee_aktivmitglied_max_1_employee: PR-Beitrag fixe Grundtaxe Aktivmitglieder bis 1 Mitarbeiter
+      base_fee_aktivmitglied_max_2_employees: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) bis 2 Mitarbeiter
+      pr_fee_aktivmitglied_max_2_employees: PR-Beitrag fixe Grundtaxe Aktivmitglieder bis 2 Mitarbeiter
+      base_fee_aktivmitglied_min_3_employees: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) 3 und mehr Mitarbeiter
+      pr_fee_aktivmitglied_min_3_employees: PR-Beitrag fixe Grundtaxe Aktivmitglieder 3 und mehr Mitarbeiter
+      fee_per_full_time_employee: Beitrag pro Angestellte 80 - 100 %
+      pr_fee_per_full_time_employee: PR-Beitrag Angestellte
+      fee_per_part_time_employee: Beitrag pro Teilzeitangestellte 10 - 79 %
+      pr_fee_per_part_time_employee: PR-Beitrag Teilzeitangestellte
+      fee_per_branch: Beitrag pro Filialbetrieb
+      pr_fee_per_branch: PR-Beitrag Filialbetriebe
+      subscription_florist: Abo Florist (integraler Bestandteil der Aktivmitgliedschaft)
+      credit_per_apprentice: Gutschrift pro Lernende
+      credit_gv_dachverband: Gutschrift Besuch Generalversammlung florist.ch
+      base_fee_berufsmitglied: Fixe Grundtaxe Berufsmitglieder
+      base_fee_berufsmitgliedplus: Fixe Grundtaxe Berufsmitglieder plus
+      subscription_fachmagazin: Abo Fachmagazin Floristen
+      base_fee_partnermitglied: Fixe Grundtaxe Partnermitglieder
+      base_fee_passivmitglied: Fixe Grundtaxe Passivmitglieder
+      section_base_fee_aktivmitglied: Fixe Grundtaxe Aktivmitglieder Sektion %{section}
+      section_fee_per_full_time_employee: Beitrag pro Angestellte 80 - 100 % Sektion %{section}
+      section_fee_per_part_time_employee: Beitrag pro Teilzeitangestellte 10 - 79 % Sektion %{section}
+      section_fee_per_branch: Beitrag pro Filialbetrieb Sektion %{section}
+      section_credit_gv_sektion: Gutschrift Besuch Generalversammlung Sektion %{section}
+      section_advertising_fee: Propaganda- und Werbebeitrag Sektion %{section}
+      section_base_fee_berufsmitglied: Fixe Grundtaxe Berufsmitglieder Sektion %{section}
+      section_base_fee_partnermitglied: Fixe Grundtaxe Partnermitglieder Sektion %{section}
+      section_base_fee_passivmitglied: Fixe Grundtaxe Passivmitglied Sektion %{section}
