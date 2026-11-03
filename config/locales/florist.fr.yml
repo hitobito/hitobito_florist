@@ -8,6 +8,7 @@ fr:
   activerecord:
     attributes:
       person:
+        id: Mitgliedernummer
         full_time_employee_count: Anzahl Vollzeitangestellte
         part_time_employee_count: Anzahl Teilzeitangestellte
         apprentice_count: Anzahl Lernende
