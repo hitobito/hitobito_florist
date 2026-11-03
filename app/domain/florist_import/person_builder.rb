@@ -9,7 +9,8 @@ module FloristImport
   class PersonBuilder
     QUALIFICATION_ORIGIN = "Datenmigration"
 
-    def initialize
+    def initialize(groups)
+      @groups = groups
       @qualification_kinds = {}
     end
 
@@ -17,15 +18,16 @@ module FloristImport
       row.qualification_labels.map { |label| qualification_kind(label) }
     end
 
-    def build(row, kinds, email_taken:)
-      attributes = row.person_attributes.dup
-      attributes.delete("email") if email_taken
+    def build(row, check, kinds)
       ::Person.new.tap do |person|
-        Import::Person.new(person, attributes, override: true, can_manage_tags: true).populate
+        Import::Person.new(person, check.attributes.dup, override: true, can_manage_tags: true)
+          .populate
         build_websites(person, row)
-        build_private_phone(person, row)
+        build_private_phone(person, check)
+        build_duplicate_email(person, check)
         build_roles(person, row)
         build_qualifications(person, kinds)
+        build_notes(person, [row.mutation_note, *check.notes].compact)
       end
     end
 
@@ -47,11 +49,11 @@ module FloristImport
       end
     end
 
-    def build_private_phone(person, row)
-      return unless row.private_phone
+    def build_private_phone(person, check)
+      return unless check.private_phone
 
       person.phone_numbers.build(
-        number: row.private_phone,
+        number: check.private_phone,
         category_id: private_phone_category&.id,
         label: Mappings::PRIVATE_PHONE_LABEL
       )
@@ -63,6 +65,23 @@ module FloristImport
           group: role[:group], start_on: role[:start_on], end_on: role[:end_on]
         )
       end
+      person.roles << Mappings::CONTACT_ROLE.new(
+        group: @groups.import_datenmigration, start_on: Time.zone.today, end_on: nil
+      )
+    end
+
+    def build_duplicate_email(person, check)
+      return unless check.duplicate_email
+
+      person.additional_emails.build(
+        email: check.duplicate_email,
+        category_id: duplicate_email_category&.id,
+        label: Mappings::DUPLICATE_EMAIL_LABEL
+      )
+    end
+
+    def build_notes(person, texts)
+      texts.each { |text| person.notes.build(text:, author: @groups.root_person) }
     end
 
     def build_qualifications(person, kinds)
@@ -86,6 +105,12 @@ module FloristImport
       @website_category ||= ContactAccountCategory
         .for(SocialAccount.sti_name, ::Person.sti_name)
         .find_by(key: "website")
+    end
+
+    def duplicate_email_category
+      @duplicate_email_category ||= ContactAccountCategory
+        .for(AdditionalEmail.sti_name, ::Person.sti_name)
+        .find_by(key: Mappings::DUPLICATE_EMAIL_CATEGORY)
     end
 
     def private_phone_category

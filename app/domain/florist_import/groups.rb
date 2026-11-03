@@ -7,19 +7,19 @@
 
 module FloristImport
   class Groups
-    attr_reader :sections, :abonnemente, :interessenten
+    attr_reader :sections, :abonnemente, :contact_groups, :created_groups, :root_person
 
     class << self
       def resolve(root = Group.root)
         sections = resolve_sections
         abonnemente = find_abonnemente(root)
-        interessenten = find_interessenten(root)
-        created = interessenten.nil?
-        interessenten ||= Group::DachverbandKontakte.create!(
-          parent: root, name: Mappings::INTERESTED_GROUP_NAME
-        )
+        root_person = find_root_person
+        created = []
+        contact_groups = Mappings::CONTACT_GROUPS.transform_values do |name|
+          find_contact_group(root, name) || create_contact_group(root, name).tap { created << _1 }
+        end
 
-        new(sections:, abonnemente:, interessenten:, interessenten_created: created)
+        new(sections:, abonnemente:, contact_groups:, created_groups: created, root_person:)
       end
 
       private
@@ -37,20 +37,31 @@ module FloristImport
           raise(Error, "Gruppe Abonnemente unter #{root} nicht gefunden")
       end
 
-      def find_interessenten(root)
-        Group::DachverbandKontakte.find_by(
-          parent_id: root.id, name: Mappings::INTERESTED_GROUP_NAME
-        )
+      def find_root_person
+        ::Person.root || raise(Error, "Root-User #{Settings.root_email} nicht gefunden")
+      end
+
+      def find_contact_group(root, name)
+        Group::DachverbandKontakte.find_by(parent_id: root.id, name:)
+      end
+
+      def create_contact_group(root, name)
+        Group::DachverbandKontakte.create!(parent: root, name:)
       end
     end
 
-    def initialize(sections:, abonnemente:, interessenten:, interessenten_created: false)
+    def initialize(sections:, abonnemente:, contact_groups:, created_groups: [], root_person: nil)
       @sections = sections
       @abonnemente = abonnemente
-      @interessenten = interessenten
-      @interessenten_created = interessenten_created
+      @contact_groups = contact_groups
+      @created_groups = created_groups
+      @root_person = root_person
     end
 
-    def interessenten_created? = @interessenten_created
+    def interessenten = contact_groups.fetch(:interessenten)
+
+    def ex_mitglieder = contact_groups.fetch(:ex_mitglieder)
+
+    def import_datenmigration = contact_groups.fetch(:import_datenmigration)
   end
 end

@@ -1,13 +1,19 @@
-Adressnumm,Anrede,Firma,Name,Vorname,Code 2 Div,Code 3 ABo,Code 4 Mit,Abteilung/,Strasse/Nu,Postleitza,Ortschaft,Land,Telefon Ge,Telefon Pr,Mobilnumme,Hausnummer,TextBox,Landeskenn,Postfach,Zusatzfeld,Zusatzfeld.1,Zusatzfeld.2,Eintrittsd,Austrittsd,Geburtstag,Zusatz Ema,Anzahl Fil,Adresszusa,Email-Adre,Homepage,Mutationsd,Kanton,E-Mail RG,Anzahl Mit,Anzahl Vol,Anzahl Tei,Anzahl Aus,Anzahl Abo,GV Besuch,Filialbetr,Anzahl Tei.1,Anzahl. Vo,Abo Beginn,Abo Ende,Kanton.1,Sektionszu,MwSt-Code,Sprachcode,Fremdwõhru,QV-Chefexpertin,QV-Expertin,üK-Expertin,üK-Chefexpertin,BP-Chefexpertin,BP-Expertin,BP-Prüfkommiss.,SKBEQ,Berufsfachschule,Berufsschul-Lehrpersonen,Kursleiterin,Vorkursanbieter,externe Kursanbieter,Notiz_Merge
-1001,Frau,,Muster,Erika,,__2_______,A_________________________,,Bahnhofstrasse,8001,Zürich,CH,+41 44 668 18 01,+41 44 668 18 00,+41 79 123 45 67,12,zahlt bar,D,,,Lieferant,,01.03.2015,,24.12.1980,www.blumen.ch,,,erika@example.com,www.muster.ch,01.01.2025,ZH,rechnung@example.com,,3,2.0,1,,3.0,,,,01.01.2024,31.12.2024,,6.0,,DE,EUR,,0,,,,,,x,,,1,,,ignoriert
-1002,Firma,Blumen Muster AG,,,,__________,_B________________________,Einkauf,Industriestrasse,5000,Aarau,CH,,,,5,,,,,,,01.01.2010,31.12.2020,,,,,info@blumen-muster.invalid,,,AG,,,,,,,2.0,,,,,,,1.0,,,,,,,,,,,,,,x,,,
-1003,Herr,,Meier,Hans,,__________,________I_________________,,,,,,,,,,,,,,,,01.01.2010,31.12.2020,,,,,hans@example.com,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Adressnumm,Anrede,Firma,Name,Vorname,Code 2 Div,Code 3 Abo,Code 4 Mit,Abteilung/,Strasse/Nu,Postleitza,Ortschaft,Land,Telefon Ge,Telefon Pr,Mobilnumme,Hausnummer,TextBox,Landeskenn,Postfach,Zusatzfeld,Zusatzfeld.1,Zusatzfeld.2,Eintrittsd,Austrittsd,Geburtstag,Zusatz Ema,Anzahl Fil,Adresszusa,Email-Adre,Homepage,Mutationsd,Kanton,E-Mail RG,Anzahl Mit,Anzahl Vol,Anzahl Tei,Anzahl Aus,Anzahl Abo,GV Besuch,Filialbetr,Anzahl Tei.1,Anzahl. Vo,Abo Beginn,Abo Ende,Kanton.1,Sektionszu,MwSt-Code,Sprachcode,Fremdwõhru,QV-Chefexpertin,QV-Expertin,üK-Expertin,üK-Chefexpertin,BP-Chefexpertin,BP-Expertin,BP-Prüfkommiss.,SKBEQ,Berufsfachschule,Berufsschul-Lehrpersonen,Kursleiterin,Vorkursanbieter,externe Kursanbieter,Notiz_Merge
+1001,Frau,,Muster,Erika,,__2_______,A_________________________,,Bahnhofstrasse,8001,Zürich,CH,+41 44 668 18 01,+41 44 668 18 00,+41 79 123 45 67,12,zahlt bar,D,,,Lieferant,,2015-03-01,,1980-12-24,www.blumen.ch,,,erika@example.com,www.muster.ch,2025-01-01,ZH,rechnung@example.com,,3,2.0,1,,3.0,,,,2024-01-01,2024-12-31,,6.0,,1.0,EUR,,0,,,,,,x,,,1,,,ignoriert
+1002,Firma,Blumen Muster AG,,,,__________,_B________________________,Einkauf,Industriestrasse,5000,Aarau,CH,,,,5,,,,,,,2010-01-01,2020-12-31,,,,,info@blumen-muster.invalid,,,AG,,,,,,,2.0,,,,,,,1.0,,,,,,,,,,,,,,x,,,
+1003,Herr,,Meier,Hans,,__________,________I_________________,,,,,,,,,,,,,,,,2010-01-01,2020-12-31,,,,,hans@example.com,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 1004,Herr,,Alt,Otto,,__________,A____________________V_X__,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
-1005,Madame,,Dubois,Claire,,__________,A______________________X__,,,,,,,,,,,,,,,,01.01.2000,31.12.2020,,,,,,,,,,,,,,,,,,,,,,6.0,,fr,,,,,,,,,,,,,,,
-1006,Herr,,Schmidt,Klaus,,_1_____7__,__________________________,,Unter den Linden,10117,Berlin,DE,,,,1,,,,,,,,,,,,,,,,BY,,,,,,,,,,,01.01.2024,,,,,,,,,,,,,,,,,,,,
+1005,Madame,,Dubois,Claire,,__________,A______________________X__,,,,,,,,,,,,,,,,2000-01-01,2020-12-31,,,,,,,,,,,,,,,,,,,,,,6.0,,2.0,,,,,,,,,,,,,,,
+1006,Herr,,Schmidt,Klaus,,_1_____7__,__________________________,,Unter den Linden,10117,Berlin,DE,,,,1,,,,,,,,,,,,,,,,BY,,,,,,,,,,,2024-01-01,,,,,,,,,,,,,,,,,,,,
 1007,Frau,,Jung,Lea,,____4_____,A_________________________,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
 1008,,,Kollision,Karl,,__________,A_________________________,Einkauf,,,,,,,,,,,,,,,,,,,,c/o Hans Muster,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
 1009,,,Doppelt,Erika,,__________,A_________________________,,,,,,,,,,,,,,,,,,,,,,Erika@example.com,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
 1001,,,Nochmals,Nina,,__________,A_________________________,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
 1010,,,Telefon,Tina,,__________,A_________________________,,,,,,,,abc,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
 1011,,,Abo,Anna,,0_________,A_________________________,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
+1012,,,Ungueltig,Ulla,,__________,A___________________U_____,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
+1013,,,Gesperrt,Gustav,,__________,______G___________________,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+1014,,,Nebenbei,Nora,,__________,A____________N____________,,,,,CH,,,,,,,,,,,,,,,,,,,,XX,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,
+1015,,,Ohnecode,Otto,,__________,__________________________,,,,,,,,,,,,,,,,,,,,,,,,,,rechnung@@blumen,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+1016,,,Ohnesektion,Olga,,_1________,A_________________________,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+1017,,,Plz,Paul,,__________,A_________________________,,,80011,,CH,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,

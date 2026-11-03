@@ -7,25 +7,42 @@
 
 require "spec_helper"
 
-describe FloristImport::PeopleImporter do
+describe FloristImport::PeopleImporter, :with_truemail_validation do
   let(:csv_path) { HitobitoFlorist::Wagon.root.join("spec/fixtures/files/florist_import.csv") }
   let(:dir) { Pathname(Dir.mktmpdir) }
   let(:log_path) { dir.join("import.log") }
   let(:output) { StringIO.new }
+  let(:progress) { StringIO.new }
   let(:dry_run) { false }
   let(:log) { File.read(log_path) }
 
-  subject(:importer) { described_class.new(csv_path, dry_run:, log_path:, output:) }
+  subject(:importer) { described_class.new(csv_path, dry_run:, log_path:, output:, progress:) }
+
+  let!(:root_person) do
+    Person.new(first_name: "Root", email: Settings.root_email).tap { |p| p.save!(validate: false) }
+  end
 
   after { FileUtils.rm_rf(dir) }
 
-  def imported_ids = Person.where(id: 1001..1011).order(:id).pluck(:id)
+  def imported_ids = Person.where(id: 1001..1020).order(:id).pluck(:id)
 
   def interessenten = Group::DachverbandKontakte.where(name: "Interessenten", parent: groups(:root))
 
   def record_counts
     [Person.count, Role.with_inactive.count, Group.count, Qualification.count,
       QualificationKind.count]
+  end
+
+  def report_path = Pathname(log_path).sub_ext(".csv")
+
+  def report_rows = CSV.read(report_path, encoding: "UTF-8")
+
+  def report_row(id) = report_rows.find { |row| row.first == id }
+
+  def expect_report(id, status, *messages)
+    rows = report_rows.select { |row| row.first == id }
+    match = rows.find { |row| row[1] == status && (messages - row.drop(4)).empty? }
+    expect(match).to be_present, "no #{status} report row for #{id} with #{messages}: #{rows}"
   end
 
   def write_csv(content)
@@ -45,7 +62,7 @@ describe FloristImport::PeopleImporter do
 
   def import_lines(*rows, force: false)
     path = write_csv(header_line + rows.map { |values| csv_line(values) }.join)
-    described_class.new(path, log_path:, output:, force:).run
+    described_class.new(path, log_path:, output:, progress:, force:).run
   end
 
   def next_person_id
@@ -54,8 +71,9 @@ describe FloristImport::PeopleImporter do
 
   it "imports the importable rows" do
     expect(importer.run).to eq true
-    expect(imported_ids).to eq [1001, 1002, 1003, 1005, 1006, 1007]
-    expect(importer.counts).to eq(total: 12, imported: 6, with_notes: 1, rejected: 5, skipped: 1)
+    expect(imported_ids)
+      .to eq [1001, 1002, 1003, 1005, 1006, 1007, 1008, 1009, 1010, 1014, 1015, 1016, 1017]
+    expect(importer.counts).to eq(total: 18, imported: 13, with_notes: 7, rejected: 2, skipped: 3)
   end
 
   describe "Personen" do
@@ -68,7 +86,7 @@ describe FloristImport::PeopleImporter do
         email: "erika@example.com", street: "Bahnhofstrasse", housenumber: "12",
         zip_code: "8001", town: "Zürich", country: "CH", canton: "zh",
         birthday: Date.new(1980, 12, 24), language: "de",
-        additional_information: "zahlt bar\nLieferant", full_time_employee_count: 3,
+        additional_information: "Lieferant", full_time_employee_count: 3,
         part_time_employee_count: 2, apprentice_count: 1, branch_count: 0,
         visited_gv_dachverband: true, visited_gv_sektion: true)
       expect(erika.phone_numbers.map { |p| [p.number, p.category.key, p.label] })
@@ -85,6 +103,21 @@ describe FloristImport::PeopleImporter do
         visited_gv_dachverband: false, visited_gv_sektion: true)
     end
 
+    it "joins Abteilung and Adresszusatz into c/o" do
+      expect(Person.find(1008).address_care_of).to eq "Einkauf, c/o Hans Muster"
+    end
+
+    it "adds the Mutationsdatum as note of the root user" do
+      expect(erika.notes.map { |n| [n.text, n.author] })
+        .to eq [["Mutationsdatum: 2025-01-01", root_person]]
+      expect(Person.find(1002).notes).to be_empty
+    end
+
+    it "maps the Sprachcode" do
+      expect(Person.find(1005).language).to eq "fr"
+      expect(Person.find(1003).language).to eq "de"
+    end
+
     it "drops the canton outside of Switzerland" do
       expect(Person.find(1006)).to have_attributes(country: "DE", canton: nil)
     end
@@ -96,7 +129,27 @@ describe FloristImport::PeopleImporter do
     def roles_of(id)
       Role.with_inactive.where(person_id: id).map do |role|
         [role.type, role.group.name, role.start_on, role.end_on]
-      end
+      end - [import_role]
+    end
+
+    let(:import_role) do
+      ["Group::DachverbandKontakte::Kontakt", "Import Datenmigration", Time.zone.today, nil]
+    end
+
+    it "adds the Import Datenmigration role to every imported person" do
+      roles = Role.with_inactive.joins(:group).where(groups: {name: "Import Datenmigration"})
+      expect(roles.pluck(:person_id)).to match_array imported_ids
+      expect(roles.map { |r| [r.type, r.start_on, r.end_on] }.uniq)
+        .to eq [["Group::DachverbandKontakte::Kontakt", Time.zone.today, nil]]
+    end
+
+    it "imports a row without codes with the Import Datenmigration role only" do
+      expect(roles_of(1015)).to be_empty
+      expect(Role.with_inactive.where(person_id: 1015).count).to eq 1
+    end
+
+    it "ignores code N" do
+      expect(roles_of(1014)).to eq [["Group::Sektion::Aktivmitglied", "Zürich", nil, nil]]
     end
 
     it "creates member and abo roles in different groups" do
@@ -112,10 +165,10 @@ describe FloristImport::PeopleImporter do
         Date.new(2010, 1, 1), Date.new(2020, 12, 31)]]
     end
 
-    it "ends the active role and starts an ex member role at Austrittsdatum" do
+    it "ends the active role and starts Ex Mitglieder the day after Austritt" do
       expect(roles_of(1005)).to match_array [
         ["Group::Sektion::Aktivmitglied", "Zürich", Date.new(2000, 1, 1), Date.new(2020, 12, 31)],
-        ["Group::Sektion::ExMitglied", "Zürich", Date.new(2020, 12, 31), nil]
+        ["Group::DachverbandKontakte::Kontakt", "Ex Mitglieder", Date.new(2021, 1, 1), nil]
       ]
     end
 
@@ -141,16 +194,44 @@ describe FloristImport::PeopleImporter do
   describe "Interessenten" do
     it "creates the group and logs it" do
       expect { importer.run }.to change { interessenten.count }.from(0).to(1)
-      expect(Role.where(person_id: 1003).map { |r| [r.type, r.group] })
-        .to eq [["Group::DachverbandKontakte::Kontakt", interessenten.first]]
+      expect(Role.where(person_id: 1003, group: interessenten).map(&:type))
+        .to eq ["Group::DachverbandKontakte::Kontakt"]
       expect(log).to include "Gruppe Interessenten unter florist.ch angelegt"
     end
 
     it "uses an existing group" do
       group = Group::DachverbandKontakte.create!(name: "Interessenten", parent: groups(:root))
       expect { importer.run }.not_to change { interessenten.count }
-      expect(Role.find_by(person_id: 1003).group).to eq group
-      expect(log).not_to include "angelegt"
+      expect(Role.where(person_id: 1003).map(&:group)).to include group
+      expect(log).not_to include "Gruppe Interessenten"
+    end
+  end
+
+  describe "Kontakte-Gruppen" do
+    def contact_group(name) = Group::DachverbandKontakte.where(name:, parent: groups(:root))
+
+    it "creates Ex Mitglieder and Import Datenmigration and logs them" do
+      importer.run
+      expect(contact_group("Ex Mitglieder").count).to eq 1
+      expect(contact_group("Import Datenmigration").count).to eq 1
+      expect(log).to include "Gruppe Ex Mitglieder unter florist.ch angelegt"
+      expect(log).to include "Gruppe Import Datenmigration unter florist.ch angelegt"
+    end
+
+    it "uses existing groups" do
+      Group::DachverbandKontakte.create!(name: "Ex Mitglieder", parent: groups(:root))
+      Group::DachverbandKontakte.create!(name: "Import Datenmigration", parent: groups(:root))
+      importer.run
+      expect(contact_group("Ex Mitglieder").count).to eq 1
+      expect(contact_group("Import Datenmigration").count).to eq 1
+      expect(log).not_to include "Gruppe Ex Mitglieder"
+    end
+
+    it "aborts without root user" do
+      allow(Person).to receive(:root).and_return(nil)
+      expect(importer.run).to eq false
+      expect(imported_ids).to be_empty
+      expect(log).to include "Import abgebrochen: Root-User #{Settings.root_email} nicht gefunden"
     end
   end
 
@@ -175,56 +256,90 @@ describe FloristImport::PeopleImporter do
   describe "Ablehnungen" do
     before { importer.run }
 
-    it "rejects a duplicate email of an earlier row" do
-      expect(Person.exists?(1009)).to eq false
-      expect(log).to include "Zeile 10 | Adressnumm 1009 | Erika Doppelt | ABGELEHNT\n" \
-        "  - Email-Adre erika@example.com ist bereits vergeben"
+    it "imports a duplicate email of an earlier row as additional email" do
+      doppelt = Person.find(1009)
+      expect(doppelt.email).to be_nil
+      expect(doppelt.additional_emails.map { |e| [e.email, e.category.key, e.label] })
+        .to eq [["erika@example.com", "other", "Duplikat"]]
+      expect(doppelt.tag_list).to be_empty
+      expect_report("1009", "HINWEIS", "Email-Adre erika@example.com ist bereits vergeben und " \
+        "wurde als zusätzliche E-Mail \"Duplikat\" übernommen")
     end
 
     it "rejects a duplicate id of an earlier row" do
       expect(Person.find(1001).first_name).to eq "Erika"
-      expect(log).to include "Zeile 11 | Adressnumm 1001 | Nina Nochmals | ABGELEHNT\n" \
-        "  - Adressnumm 1001 kommt mehrfach in der Datei vor\n"
+      expect_report("1001", "ABGELEHNT", "Adressnumm 1001 kommt mehrfach in der Datei vor")
     end
 
-    it "rejects an invalid phone number with the original line" do
-      expect(log).to include "Zeile 12 | Adressnumm 1010 | Tina Telefon | ABGELEHNT\n" \
-        "  - Telefonnummer ist nicht gültig\n" \
-        "  > 1010,,,Telefon,Tina,,__________,A_________________________,"
+    it "imports an invalid phone number as tag and note" do
+      tina = Person.find(1010)
+      expect(tina.phone_numbers).to be_empty
+      expect(tina.tag_list).to eq ["import:data-invalid"]
+      expect(tina.notes.map { |n| [n.text, n.author] })
+        .to eq [["Ungültige Telefonnummer Mobil: abc", root_person]]
+      expect_report("1010", "HINWEIS", "Mobilnumme 'abc' ist ungültig und wurde nicht übernommen")
     end
 
-    it "rejects Abteilung together with Adresszusatz" do
-      expect(log).to include "Zeile 9 | Adressnumm 1008 | Karl Kollision | ABGELEHNT\n" \
-        "  - c/o-Feld ist bereits durch Abteilung/ 'Einkauf' belegt"
+    it "imports an invalid canton without canton" do
+      expect(Person.find(1014).canton).to be_nil
+      expect_report("1014", "HINWEIS", "Kanton 'xx' ist ungültig und wurde nicht übernommen")
+    end
+
+    it "imports a person without section without member role" do
+      olga = Person.find(1016)
+      expect(olga.tag_list).to eq ["import:missing-section"]
+      expect(Role.where(person_id: 1016).map(&:type)).to match_array [
+        "Group::DachverbandAbonnemente::JahresaboSchweiz", "Group::DachverbandKontakte::Kontakt"
+      ]
+      expect_report("1016", "HINWEIS",
+        "Sektionszu '' ist nicht zugeordnet, ohne Mitgliederrolle importiert")
+    end
+
+    it "imports an invalid zip code as tag and note" do
+      paul = Person.find(1017)
+      expect(paul.zip_code).to be_nil
+      expect(paul.tag_list).to eq ["import:invalid-plz"]
+      expect(paul.notes.map(&:text)).to eq ["Ungültige PLZ: 80011"]
+      expect_report("1017", "HINWEIS", "Postleitza '80011' ist ungültig und wurde nicht übernommen")
+    end
+
+    it "imports an invalid invoice email as tag and note" do
+      otto = Person.find(1015)
+      expect(otto.additional_emails).to be_empty
+      expect(otto.tag_list).to eq ["import:data-invalid"]
+      expect(otto.notes.map(&:text)).to eq ["Ungültige E-Mail RG: rechnung@@blumen"]
+    end
+
+    it "logs the skipped rows with code U and G" do
+      expect(Person.where(id: [1012, 1013])).to be_empty
+      expect_report("1012", "ÜBERSPRUNGEN", "Ungültig (Code 4 Mit 'U')")
+      expect_report("1013", "ÜBERSPRUNGEN", "Übersprungen (Code 4 Mit 'G')")
     end
 
     it "logs the skipped deceased row with further codes" do
       expect(Person.exists?(1004)).to eq false
-      expect(log).to include "Zeile 5 | Adressnumm 1004 | Otto Alt | ÜBERSPRUNGEN\n" \
-        "  - Verstorben (Code 4 Mit 'V')\n" \
-        "  > 1004,Herr,,Alt,Otto,,__________,A____________________V_X__,"
+      expect_report("1004", "ÜBERSPRUNGEN", "Verstorben (Code 4 Mit 'V')")
     end
 
     it "logs the note of an imported row without the original line" do
-      expect(log).to include "Zeile 8 | Adressnumm 1007 | Lea Jung | HINWEIS\n" \
-        "  - Abo-Code 4 (Jahresabo Jungfloristen) nicht importiert\n\n"
+      expect_report("1007", "HINWEIS", "Abo-Code 4 (Jahresabo Jungfloristen) nicht importiert")
     end
 
     it "writes the summary to the log and the output" do
-      summary = "Zusammenfassung\n  Total: 12\n  Importiert: 6 (davon mit Hinweis: 1)\n" \
-        "  Abgelehnt: 5\n  Übersprungen: 1\n"
+      summary = "Zusammenfassung\n  Total: 18\n  Importiert: 13 (davon mit Hinweis: 7)\n" \
+        "  Abgelehnt: 2\n  Übersprungen: 3\n"
       expect(log).to end_with summary
-      expect(output.string).to eq "#{summary}Log: #{log_path}\n"
+      expect(output.string).to eq "#{summary}Log: #{log_path}\nReport: #{report_path}\n"
     end
   end
 
   it "rejects a company salutation without company name" do
     content = File.read(csv_path).lines.first +
       "2001,Firma,,,,,,A,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,\n"
-    described_class.new(write_csv(content), log_path:, output:).run
+    described_class.new(write_csv(content), log_path:, output:, progress:).run
     expect(Person.exists?(2001)).to eq false
-    expect(log).to include "Zeile 2 | Adressnumm 2001 |  | ABGELEHNT"
-    expect(log).to include "Firmenname muss ausgefüllt werden"
+    expect_report("2001", "ABGELEHNT")
+    expect(report_row("2001").drop(4).join).to include "Firmenname muss ausgefüllt werden"
   end
 
   describe "Zeilenweise Atomarität" do
@@ -233,9 +348,8 @@ describe FloristImport::PeopleImporter do
         .to receive(:create_passes).and_raise("Boom")
       lines = File.read(csv_path).lines
       path = write_csv(lines[0] + lines[1] + lines[2])
-      described_class.new(path, log_path:, output:).run
-      expect(log).to include "Zeile 2 | Adressnumm 1001 | Erika Muster | ABGELEHNT\n" \
-        "  - RuntimeError: Boom"
+      described_class.new(path, log_path:, output:, progress:).run
+      expect_report("1001", "ABGELEHNT", "RuntimeError: Boom")
       expect(Person.exists?(1001)).to eq false
       expect(Role.with_inactive.where(person_id: 1001)).to be_empty
       expect(imported_ids).to eq [1002]
@@ -248,14 +362,14 @@ describe FloristImport::PeopleImporter do
     it "persists nothing" do
       expect { importer.run }.not_to change { record_counts }
       expect(log).to start_with "Florist Import (Probelauf)"
-      expect(importer.counts[:imported]).to eq 6
+      expect(importer.counts[:imported]).to eq 13
     end
 
     it "logs the same rejections as a real run" do
       entries = ->(text) { text.lines.drop(2) }
       importer.run
       dry_log = log
-      described_class.new(csv_path, log_path:, output:).run
+      described_class.new(csv_path, log_path:, output:, progress:).run
       expect(entries.call(dry_log)).to eq entries.call(log)
     end
   end
@@ -279,14 +393,15 @@ describe FloristImport::PeopleImporter do
       expect(Person.find(1002).email).to eq "info@blumen-muster.invalid"
     end
 
-    it "rejects an email with invalid format" do
+    it "imports an email with invalid format as tag and note" do
       content = File.read(csv_path).lines.first +
         "2001,,,Test,Tom,,,A,,,,,,,,,,,,,,,,,,,,,,info@@blumen," \
         ",,,,,,,,,,,,,,,,6.0,,,,,,,,,,,,,,,,,\n"
-      described_class.new(write_csv(content), log_path:, output:).run
-      expect(Person.exists?(2001)).to eq false
-      expect(log).to include "Zeile 2 | Adressnumm 2001 | Tom Test | ABGELEHNT\n" \
-        "  - Haupt-E-Mail ist nicht gültig"
+      described_class.new(write_csv(content), log_path:, output:, progress:).run
+      tom = Person.find(2001)
+      expect(tom.email).to be_nil
+      expect(tom.tag_list).to eq ["import:data-invalid"]
+      expect(tom.notes.map(&:text)).to eq ["Ungültige Email: info@@blumen"]
     end
 
     it "restores the validation type after the run" do
@@ -295,7 +410,7 @@ describe FloristImport::PeopleImporter do
     end
 
     it "restores the validation type after an abort" do
-      described_class.new(write_csv("Adressnumm\n1\n"), log_path:, output:).run
+      described_class.new(write_csv("Adressnumm\n1\n"), log_path:, output:, progress:).run
       expect(Truemail.configuration.default_validation_type).to eq validation_type
     end
 
@@ -306,13 +421,13 @@ describe FloristImport::PeopleImporter do
     end
   end
 
-  it "counts csv records for the line numbers" do
+  it "imports a cell with a line break" do
     lines = File.read(csv_path).lines
-    first = lines[1].sub("zahlt bar", "\"zahlt\nbar\"")
-    path = write_csv(lines[0] + first + lines[9])
-    described_class.new(path, log_path:, output:).run
-    expect(Person.find(1001).additional_information).to start_with "zahlt\nbar"
-    expect(log).to include "Zeile 3 | Adressnumm 1009 | Erika Doppelt | ABGELEHNT"
+    first = lines[1].sub("Lieferant", "\"Liefer\nant\"")
+    path = write_csv(lines[0] + first + lines[10])
+    described_class.new(path, log_path:, output:, progress:).run
+    expect(Person.find(1001).additional_information).to eq "Liefer\nant"
+    expect_report("1001", "ABGELEHNT")
   end
 
   describe "bestehende IDs" do
@@ -323,29 +438,38 @@ describe FloristImport::PeopleImporter do
     it "skips a person existing before the import" do
       importer.run
       expect(existing.reload.first_name).to eq "Alt"
-      expect(log).to include "Zeile 3 | Adressnumm 1002 | Blumen Muster AG | ÜBERSPRUNGEN\n" \
-        "  - Person 1002 existiert bereits\n"
-      expect(importer.counts).to include(imported: 5, skipped: 2)
+      expect_report("1002", "ÜBERSPRUNGEN", "Person 1002 existiert bereits")
+      expect(importer.counts).to include(imported: 12, skipped: 4)
     end
   end
 
+  it "imports an email of an existing person as duplicate" do
+    Person.create!(first_name: "Bestehend", email: "hans@example.com")
+    importer.run
+    hans = Person.find(1003)
+    expect(hans.email).to be_nil
+    expect(hans.additional_emails.map { |e| [e.email, e.label] })
+      .to eq [["hans@example.com", "Duplikat"]]
+  end
+
   it "rejects a duplicate of a rejected row" do
-    import_lines(member(3001, "Erste", "Mobilnumme" => "abc"), member(3001, "Zweite"))
+    import_lines(member(3001, "Erste", "Geburtstag" => "irgendwann"), member(3001, "Zweite"))
     expect(Person.exists?(3001)).to eq false
-    expect(log).to include "Zeile 3 | Adressnumm 3001 | Zweite | ABGELEHNT\n" \
-      "  - Adressnumm 3001 kommt mehrfach in der Datei vor\n"
+    expect_report("3001", "ABGELEHNT", "Adressnumm 3001 kommt mehrfach in der Datei vor")
   end
 
   it "keeps a qualification kind created for a rejected row" do
     expect do
-      import_lines(member(3002, "Abgelehnt", "Mobilnumme" => "abc", "SKBEQ" => "x"),
+      import_lines(member(3002, "Abgelehnt", "Geburtstag" => "irgendwann", "SKBEQ" => "x"),
         member(3003, "Importiert", "SKBEQ" => "x"))
     end.to change { QualificationKind.count }.by(1)
     expect(Person.find(3003).qualifications.map { |q| q.qualification_kind.label }).to eq ["SKBEQ"]
   end
 
   describe "Force-Import" do
-    let(:force_importer) { described_class.new(csv_path, log_path:, output:, force: true) }
+    let(:force_importer) do
+      described_class.new(csv_path, log_path:, output:, progress:, force: true)
+    end
     let!(:erika) do
       Person.create!(id: 1001, first_name: "Alt", last_name: "Erika", email: "erika@example.com")
     end
@@ -359,42 +483,42 @@ describe FloristImport::PeopleImporter do
       replaced = Person.find(1001)
       expect(replaced).to have_attributes(first_name: "Erika", last_name: "Muster",
         email: "erika@example.com")
-      expect(Role.with_inactive.where(person_id: 1001).map(&:type)).to match_array [
-        "Group::Sektion::Aktivmitglied", "Group::DachverbandAbonnemente::JahresaboMitglied"
-      ]
+      expect(Role.with_inactive.where(person_id: 1001).map { |r| [r.type, r.group.name] })
+        .to match_array [
+          ["Group::Sektion::Aktivmitglied", "Zürich"],
+          ["Group::DachverbandAbonnemente::JahresaboMitglied", "Abonnemente"],
+          ["Group::DachverbandKontakte::Kontakt", "Import Datenmigration"]
+        ]
+      expect(replaced.notes.map(&:text)).to eq ["Mutationsdatum: 2025-01-01"]
       expect(replaced.qualifications.map { |q| q.qualification_kind.label })
         .to match_array %w[SKBEQ Kursleiterin]
-      expect(log).to include "Zeile 2 | Adressnumm 1001 | Erika Muster | HINWEIS\n" \
-        "  - Bestehende Person 1001 ersetzt\n"
+      expect_report("1001", "HINWEIS", "Bestehende Person 1001 ersetzt")
     end
 
     it "does not replace with a duplicate of the file" do
       force_importer.run
       expect(Person.find(1001).first_name).to eq "Erika"
-      expect(log).to include "Zeile 11 | Adressnumm 1001 | Nina Nochmals | ABGELEHNT\n" \
-        "  - Adressnumm 1001 kommt mehrfach in der Datei vor\n"
+      expect_report("1001", "ABGELEHNT", "Adressnumm 1001 kommt mehrfach in der Datei vor")
     end
 
     it "keeps the existing person if the row is rejected" do
-      tina = Person.create!(id: 1010, first_name: "Alt", last_name: "Tina")
+      anna = Person.create!(id: 1011, first_name: "Alt", last_name: "Anna")
       force_importer.run
-      expect(tina.reload).to have_attributes(first_name: "Alt", last_name: "Tina")
-      expect(log).to include "Zeile 12 | Adressnumm 1010 | Tina Telefon | ABGELEHNT\n" \
-        "  - Telefonnummer ist nicht gültig"
+      expect(anna.reload).to have_attributes(first_name: "Alt", last_name: "Anna")
+      expect_report("1011", "ABGELEHNT", "Code 3 Abo '0' ist unbekannt")
     end
 
     it "keeps an existing person with code V" do
       otto = Person.create!(id: 1004, first_name: "Alt", last_name: "Otto")
       force_importer.run
       expect(otto.reload.first_name).to eq "Alt"
-      expect(log).to include "Zeile 5 | Adressnumm 1004 | Otto Alt | ÜBERSPRUNGEN\n" \
-        "  - Verstorben (Code 4 Mit 'V')"
+      expect_report("1004", "ÜBERSPRUNGEN", "Verstorben (Code 4 Mit 'V')")
     end
 
     it "counts the replaced people in the summary" do
       force_importer.run
-      expect(force_importer.counts).to include(imported: 6, replaced: 1, with_notes: 2)
-      expect(log).to include "  Importiert: 6 (davon ersetzt: 1, mit Hinweis: 2)\n"
+      expect(force_importer.counts).to include(imported: 13, replaced: 1, with_notes: 8)
+      expect(log).to include "  Importiert: 13 (davon ersetzt: 1, mit Hinweis: 8)\n"
     end
   end
 
@@ -420,7 +544,7 @@ describe FloristImport::PeopleImporter do
         Person.connection.select_rows("SELECT last_value, is_called FROM people_id_seq")
       }
       before = sequence_state.call
-      described_class.new(csv_path, log_path:, output:, dry_run: true).run
+      described_class.new(csv_path, log_path:, output:, progress:, dry_run: true).run
       expect(sequence_state.call).to eq before
     end
   end
@@ -436,7 +560,7 @@ describe FloristImport::PeopleImporter do
     it "aborts on missing columns" do
       header = File.read(csv_path).lines.first.sub(",Sektionszu", "").sub(",Kanton,", ",")
       path = write_csv("#{header}9999,Herr,,Test,Tom,,,A\n")
-      result = described_class.new(path, log_path:, output:).run
+      result = described_class.new(path, log_path:, output:, progress:).run
       expect(result).to eq false
       expect(Person.exists?(9999)).to eq false
       expect(log).to include "Import abgebrochen: Fehlende Spalten: Kanton, Sektionszu"
@@ -458,9 +582,107 @@ describe FloristImport::PeopleImporter do
       original.call(**options)
     end
     importer.run
-    expect(log).to include "Zeile 4 | Adressnumm 1003 | Hans Meier | ABGELEHNT\n" \
-      "  - RuntimeError: Boom"
-    expect(imported_ids).to eq [1001, 1002, 1005, 1006, 1007]
+    expect_report("1003", "ABGELEHNT", "RuntimeError: Boom")
+    expect(imported_ids)
+      .to eq [1001, 1002, 1005, 1006, 1007, 1008, 1009, 1010, 1014, 1015, 1016, 1017]
+  end
+
+  describe "Fortschrittsanzeige" do
+    it "shows the phases and the progress of a real run" do
+      importer.run
+      lines = progress.string.lines.map(&:chomp)
+      expect(lines.first(3)).to eq ["Datei wird gelesen …", "Gruppen werden geprüft …",
+        "18 Zeilen werden importiert …"]
+      expect(lines.grep(/^Zeilen /).last).to start_with "Zeilen 18/18 (100%) | importiert 13 | " \
+        "abgelehnt 2 | übersprungen 3 |"
+      expect(lines.last).to eq "ID-Sequenz wird gesetzt …"
+    end
+
+    it "shows the rollback in a dry run" do
+      described_class.new(csv_path, log_path:, output:, progress:, dry_run: true).run
+      expect(progress.string.lines.last).to eq "Probelauf wird zurückgerollt …\n"
+      expect(progress.string).not_to include "ID-Sequenz"
+    end
+
+    it "ends with the last phase on an abort" do
+      described_class.new(write_csv("Adressnumm\n1\n"), log_path:, output:, progress:).run
+      expect(progress.string).to eq "Datei wird gelesen …\n"
+      expect(output.string).to start_with "Import abgebrochen: Fehlende Spalten"
+    end
+
+    it "keeps progress out of the log and the summary" do
+      importer.run
+      expect(log).not_to include "Zeilen 18/18"
+      expect(log).not_to include "wird gelesen"
+      expect(output.string).not_to include "Zeilen 18/18"
+    end
+  end
+
+  describe "Spaltennamen" do
+    it "reads columns regardless of case" do
+      lines = File.read(csv_path).lines
+      path = write_csv(lines[0].sub("Code 3 Abo", "Code 3 ABo") + lines[1])
+      described_class.new(path, log_path:, output:, progress:).run
+      expect(Role.with_inactive.where(person_id: 1001).map(&:type))
+        .to include "Group::DachverbandAbonnemente::JahresaboMitglied"
+    end
+
+    it "reads columns written in a different case throughout" do
+      lines = File.read(csv_path).lines
+      header = lines[0].sub("Adressnumm", "ADRESSNUMM").sub("Email-Adre", "email-adre")
+      described_class.new(write_csv(header + lines[1]), log_path:, output:, progress:).run
+      expect(Person.find(1001).email).to eq "erika@example.com"
+    end
+
+    it "reports missing columns with the expected name" do
+      header = File.read(csv_path).lines.first.sub(",Hausnummer,", ",")
+      result = described_class.new(write_csv("#{header}1\n"), log_path:, output:, progress:).run
+      expect(result).to eq false
+      expect(log).to include "Import abgebrochen: Fehlende Spalten: Hausnummer"
+    end
+
+    it "aborts on columns differing only in case" do
+      header = File.read(csv_path).lines.first.chomp + ",Code 3 ABo\n"
+      result = described_class.new(write_csv("#{header}1\n"), log_path:, output:, progress:).run
+      expect(result).to eq false
+      expect(log).to include "Import abgebrochen: Spalten mehrfach vorhanden: " \
+        "Code 3 Abo, Code 3 ABo"
+    end
+  end
+
+  describe "Logfile und Report" do
+    it "keeps rows out of the log" do
+      importer.run
+      expect(log).to start_with "Florist Import (Import)"
+      expect(log).to include "Report: #{report_path}"
+      expect(log).not_to include "Adressnumm"
+      expect(log).to end_with "Übersprungen: 3\n"
+    end
+
+    it "writes header and abort message to the log on an abort" do
+      described_class.new(write_csv("Adressnumm\n1\n"), log_path:, output:, progress:).run
+      expect(log.lines.size).to eq 5
+      expect(log).to include "Import abgebrochen: Fehlende Spalten"
+      expect(report_rows).to eq [%w[Adressnumm Status Vorname Nachname Meldungen]]
+    end
+
+    it "writes a report row per rejected, skipped or noted row" do
+      importer.run
+      expect(report_rows.first).to eq %w[Adressnumm Status Vorname Nachname Meldungen]
+      expect(report_row("1011")).to eq ["1011", "ABGELEHNT", "Anna", "Abo",
+        "Code 3 Abo '0' ist unbekannt"]
+      expect(report_rows.size).to eq 1 + 2 + 3 + 7
+    end
+
+    it "leaves rows without findings out of the report" do
+      importer.run
+      expect(report_row("1002")).to be_nil
+    end
+
+    it "writes the report in a dry run" do
+      described_class.new(csv_path, log_path:, output:, progress:, dry_run: true).run
+      expect(report_row("1011")[1]).to eq "ABGELEHNT"
+    end
   end
 
   it "sends no mails" do

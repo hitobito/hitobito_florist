@@ -18,16 +18,27 @@ module FloristImport
       "F" => Group::Sektion::Filiale,
       "H" => Group::Sektion::Entdecker,
       "L" => Group::Sektion::Partnermitglied,
-      "P" => Group::Sektion::Passivmitglied,
-      "X" => Group::Sektion::ExMitglied
+      "P" => Group::Sektion::Passivmitglied
     }.freeze
 
     EX_MEMBER_CODE = "X"
     INTERESTED_CODE = "I"
-    DECEASED_CODE = "V"
 
-    INTERESTED_ROLE = Group::DachverbandKontakte::Kontakt
-    INTERESTED_GROUP_NAME = "Interessenten"
+    # TBD: these codes skip the row even if further codes are set
+    SKIP_CODES = {
+      "V" => "Verstorben",
+      "U" => "Ungültig",
+      "G" => "Übersprungen"
+    }.freeze
+
+    IGNORED_MEMBER_CODES = %w[N].freeze
+
+    CONTACT_ROLE = Group::DachverbandKontakte::Kontakt
+    CONTACT_GROUPS = {
+      interessenten: "Interessenten",
+      ex_mitglieder: "Ex Mitglieder",
+      import_datenmigration: "Import Datenmigration"
+    }.freeze
 
     ABO_ROLES = {
       "1" => Group::DachverbandAbonnemente::JahresaboSchweiz,
@@ -76,7 +87,35 @@ module FloristImport
     PRIVATE_PHONE_CATEGORY = "other"
     PRIVATE_PHONE_LABEL = "Privat"
 
-    NOTE_COLUMNS = ["TextBox", "Zusatzfeld", "Zusatzfeld.1", "Zusatzfeld.2"].freeze
+    INVALID_DATA_TAG = "import:data-invalid"
+    MISSING_SECTION_TAG = "import:missing-section"
+    INVALID_ZIP_TAG = "import:invalid-plz"
+    DUPLICATE_EMAIL_CATEGORY = "other"
+    DUPLICATE_EMAIL_LABEL = "Duplikat"
+
+    CHECKED_PHONES = {
+      "Telefon Ge" => "phone_number_work",
+      "Mobilnumme" => "phone_number_mobile"
+    }.freeze
+
+    CHECKED_EMAILS = {
+      "Email-Adre" => "email",
+      "E-Mail RG" => "additional_email_invoices",
+      "Zusatz Ema" => "additional_email_private"
+    }.freeze
+
+    INVALID_NOTE_FIELDS = {
+      "Telefon Ge" => "Telefonnummer Geschäft",
+      "Mobilnumme" => "Telefonnummer Mobil",
+      "Telefon Pr" => "Telefonnummer Privat",
+      "Email-Adre" => "Email",
+      "E-Mail RG" => "E-Mail RG",
+      "Zusatz Ema" => "Zusatz Email"
+    }.freeze
+
+    NOTE_COLUMNS = ["Zusatzfeld", "Zusatzfeld.1", "Zusatzfeld.2"].freeze
+
+    MUTATION_NOTE_PREFIX = "Mutationsdatum: "
 
     QUALIFICATION_COLUMNS = [
       "QV-Chefexpertin", "QV-Expertin", "üK-Expertin", "üK-Chefexpertin",
@@ -86,15 +125,21 @@ module FloristImport
 
     UNSET_VALUES = %w[0 nein false].freeze
 
-    DATE_FORMAT = "%d.%m.%Y"
+    DATE_FORMAT = "%Y-%m-%d"
+    DATE_FORMAT_LABEL = "JJJJ-MM-TT"
+
+    LANGUAGES = {
+      "1" => "de",
+      "2" => "fr"
+    }.freeze
 
     REQUIRED_HEADERS = ([
-      "Adressnumm", "Anrede", "Firma", "Name", "Vorname", "Code 3 ABo", "Code 4 Mit",
+      "Adressnumm", "Anrede", "Firma", "Name", "Vorname", "Code 3 Abo", "Code 4 Mit",
       "Abteilung/", "Strasse/Nu", "Postleitza", "Ortschaft", "Land", "Telefon Ge", "Telefon Pr",
       "Mobilnumme", "Hausnummer", "Postfach", "Eintrittsd", "Austrittsd", "Geburtstag",
       "Zusatz Ema", "Anzahl Fil", "Adresszusa", "Email-Adre", "Homepage", "Kanton", "E-Mail RG",
       "Anzahl Vol", "Anzahl Tei", "Anzahl Aus", "GV Besuch", "Abo Beginn", "Abo Ende",
-      "Sektionszu", "Sprachcode"
+      "Sektionszu", "Sprachcode", "Mutationsd"
     ] + NOTE_COLUMNS + QUALIFICATION_COLUMNS).freeze
   end
 end

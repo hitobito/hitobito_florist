@@ -11,34 +11,41 @@ module FloristImport
 
     attr_reader :log_path, :counts
 
-    def initialize(csv_path, dry_run: false, force: false, log_path: nil, output: $stdout)
+    def initialize(csv_path, dry_run: false, force: false, log_path: nil,
+      output: $stdout, progress: $stderr)
       @csv_path = csv_path
       @dry_run = dry_run
       @force = force
       @log_path = log_path || default_log_path
       @output = output
+      @progress = Progress.new(progress)
+      @report = Report.new
       @counts = Hash.new(0)
-      @builder = PersonBuilder.new
       @seen_ids = Set.new
     end
 
+    def report_path = Pathname(log_path).sub_ext(".csv")
+
     def run
-      with_regex_email_validation do
-        File.open(log_path, "w") do |file|
-          @log = Log.new(file)
-          @log.header(@csv_path, @dry_run)
-          import
-          report(@log.summary(counts, force: @force))
-          true
-        rescue Error => e
-          @log.abort(e.message)
-          report("Import abgebrochen: #{e.message}")
-          false
-        end
-      end
+      with_regex_email_validation { File.open(log_path, "w") { |file| run_with_log(file) } }
+    ensure
+      @report.write(report_path)
+      @progress.finish
     end
 
     private
+
+    def run_with_log(file)
+      @log = Log.new(file)
+      @log.header(@csv_path, @dry_run, report_path)
+      import
+      print_result(@log.summary(counts, force: @force))
+      true
+    rescue Error => e
+      @log.abort(e.message)
+      print_result("Import abgebrochen: #{e.message}")
+      false
+    end
 
     def with_regex_email_validation
       previous = Truemail.configuration.default_validation_type
@@ -51,16 +58,30 @@ module FloristImport
     end
 
     def import
-      table = parse
+      @progress.phase("Datei wird gelesen …")
+      table = canonical_table(parse)
       assert_headers(table)
       in_transaction do
+        @progress.phase("Gruppen werden geprüft …")
         groups = resolve_groups
-        table.each.with_index(2) do |csv_row, line|
-          counts[:total] += 1
-          import_row(Row.new(csv_row, line:, groups:))
-        end
+        @builder = PersonBuilder.new(groups)
+        import_rows(table, groups)
+        @progress.phase("Probelauf wird zurückgerollt …") if @dry_run
       end
-      update_id_sequence unless @dry_run
+      return if @dry_run
+
+      @progress.phase("ID-Sequenz wird gesetzt …")
+      update_id_sequence
+    end
+
+    def import_rows(table, groups)
+      @progress.phase("#{table.size} Zeilen werden importiert …")
+      @progress.start(table.size)
+      table.each.with_index(2) do |csv_row, line|
+        counts[:total] += 1
+        import_row(Row.new(csv_row, line:, groups:))
+        @progress.step(counts[:total], counts)
+      end
     end
 
     def parse
@@ -70,6 +91,21 @@ module FloristImport
       parser.csv
     rescue SystemCallError => e
       raise Error, e.message
+    end
+
+    def canonical_table(table)
+      expected = Mappings::REQUIRED_HEADERS.index_by(&:downcase)
+      headers = table.headers.map { |header| expected.fetch(header.to_s.downcase, header) }
+      assert_unambiguous(table.headers, headers)
+      CSV::Table.new(table.map { |row| CSV::Row.new(headers, row.fields) }, headers:)
+    end
+
+    def assert_unambiguous(original, headers)
+      duplicates = original.group_by.with_index { |_, i| headers[i] }
+        .select { |name, columns| Mappings::REQUIRED_HEADERS.include?(name) && columns.size > 1 }
+      return if duplicates.empty?
+
+      raise Error, "Spalten mehrfach vorhanden: #{duplicates.values.flatten.join(", ")}"
     end
 
     def assert_headers(table)
@@ -88,8 +124,8 @@ module FloristImport
 
     def resolve_groups
       Groups.resolve.tap do |groups|
-        if groups.interessenten_created?
-          @log.info("Gruppe #{groups.interessenten} unter #{groups.interessenten.parent} angelegt")
+        groups.created_groups.each do |group|
+          @log.info("Gruppe #{group} unter #{group.parent} angelegt")
         end
       end
     end
@@ -103,8 +139,8 @@ module FloristImport
       reason = skip_reason(row, existing)
       return skip(row, reason) if reason
 
-      errors = save_row(row, existing, @builder.qualification_kinds(row))
-      errors.any? ? reject(row, errors) : imported(row, replaced: existing.present?)
+      errors, hints = save_row(row, existing, @builder.qualification_kinds(row))
+      errors.any? ? reject(row, errors) : imported(row, hints, replaced: existing.present?)
     rescue => e
       reject(row, ["#{e.class}: #{e.message}"])
     end
@@ -112,54 +148,50 @@ module FloristImport
     def duplicate?(row) = row.id && !@seen_ids.add?(row.id)
 
     def skip_reason(row, existing)
-      if row.deceased?
-        "Verstorben (Code 4 Mit '#{Mappings::DECEASED_CODE}')"
+      if row.skip_reason
+        row.skip_reason
       elsif existing && !@force
         "Person #{row.id} existiert bereits"
       end
     end
 
     def save_row(row, existing, kinds)
-      errors = []
+      result = [[], []]
       ActiveRecord::Base.transaction(requires_new: true) do
         People::Destroyer.new(existing).run if existing
-        errors = build_and_save(row, kinds)
-        raise ActiveRecord::Rollback if errors.any?
+        result = build_and_save(row, kinds)
+        raise ActiveRecord::Rollback if result.first.any?
       end
-      errors
+      result
     end
 
     def build_and_save(row, kinds)
       email_taken = row.email.present? && ::Person.exists?(email: row.email)
-      person = @builder.build(row, kinds, email_taken:)
-      errors = row.errors + email_conflicts(row, email_taken) + @builder.errors(person)
-      return errors if errors.any?
-
-      person.save ? [] : person.errors.full_messages
+      check = ContactCheck.new(row, email_taken:)
+      person = @builder.build(row, check, kinds)
+      errors = row.errors + @builder.errors(person)
+      errors = person.errors.full_messages if errors.empty? && !person.save
+      [errors, check.hints]
     end
 
-    def email_conflicts(row, email_taken)
-      email_taken ? ["Email-Adre #{row.email} ist bereits vergeben"] : []
-    end
-
-    def imported(row, replaced:)
+    def imported(row, hints, replaced:)
       counts[:imported] += 1
       counts[:replaced] += 1 if replaced
-      notes = (replaced ? ["Bestehende Person #{row.id} ersetzt"] : []) + row.notes
+      notes = (replaced ? ["Bestehende Person #{row.id} ersetzt"] : []) + row.notes + hints
       return if notes.empty?
 
       counts[:with_notes] += 1
-      @log.entry(row, "HINWEIS", notes, raw: false)
+      @report.add(row, "HINWEIS", notes)
     end
 
     def skip(row, reason)
       counts[:skipped] += 1
-      @log.entry(row, "ÜBERSPRUNGEN", [reason])
+      @report.add(row, "ÜBERSPRUNGEN", [reason])
     end
 
     def reject(row, errors)
       counts[:rejected] += 1
-      @log.entry(row, "ABGELEHNT", errors)
+      @report.add(row, "ABGELEHNT", errors)
     end
 
     def update_id_sequence
@@ -169,9 +201,10 @@ module FloristImport
       )
     end
 
-    def report(text)
+    def print_result(text)
       @output.puts text
       @output.puts "Log: #{log_path}"
+      @output.puts "Report: #{report_path}"
     end
 
     def default_log_path

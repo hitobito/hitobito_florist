@@ -11,21 +11,15 @@ module FloristImport
       @io = io
     end
 
-    def header(csv_path, dry_run)
+    def header(csv_path, dry_run, report_path)
       mode = dry_run ? "Probelauf" : "Import"
       @io.puts "Florist Import (#{mode}) #{Time.zone.now.strftime("%d.%m.%Y %H:%M")}"
       @io.puts "Datei: #{csv_path}"
+      @io.puts "Report: #{report_path}"
     end
 
     def info(text)
       @io.puts text
-    end
-
-    def entry(row, status, messages, raw: true)
-      @io.puts
-      @io.puts ["Zeile #{row.line}", "Adressnumm #{row.id}", row.name, status].join(" | ")
-      messages.each { |message| @io.puts "  - #{message}" }
-      @io.puts "  > #{row.raw}" if raw
     end
 
     def summary(counts, force: false)

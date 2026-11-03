@@ -8,8 +8,8 @@
 module FloristImport
   class Row
     include Mappings
+    include Values
 
-    INTEGER_FORMAT = /\A\d+(\.0+)?\z/
     UNSET_CODE = "_"
 
     attr_reader :line
@@ -33,6 +33,11 @@ module FloristImport
       @notes
     end
 
+    def tags
+      roles
+      @missing_section ? [MISSING_SECTION_TAG] : []
+    end
+
     def id
       return @id if defined?(@id)
 
@@ -41,21 +46,27 @@ module FloristImport
 
     def email = value("Email-Adre")&.downcase
 
-    # TBD: V skips the row even if further codes are set
-    def deceased? = member_codes.include?(DECEASED_CODE)
-
-    def name
-      [value("Vorname"), value("Name")].compact.join(" ").presence || value("Firma")
+    def skip_reason
+      code = member_codes.find { |c| SKIP_CODES.key?(c) }
+      "#{SKIP_CODES[code]} (Code 4 Mit '#{code}')" if code
     end
 
-    def raw = @csv_row.to_csv.chomp
+    def mutation_note
+      "#{MUTATION_NOTE_PREFIX}#{value("Mutationsd")}" if value("Mutationsd")
+    end
+
+    def address_number = value("Adressnumm")
+
+    def first_name = value("Vorname")
+
+    def last_name = value("Name")
 
     def person_attributes
       @person_attributes ||= {
         "id" => id,
         "email" => email,
         "birthday" => date("Geburtstag"),
-        "language" => value("Sprachcode")&.downcase,
+        "language" => language,
         "additional_information" => notes_text
       }.merge(name_attributes, address_attributes, florist_attributes, contact_attributes).compact
     end
@@ -66,7 +77,7 @@ module FloristImport
 
     def private_phone = value("Telefon Pr")
 
-    def roles = @roles ||= (member_roles + abo_roles).tap { |roles| assert_any(roles) }
+    def roles = @roles ||= member_roles + abo_roles
 
     def qualification_labels
       QUALIFICATION_COLUMNS.select { |column| set?(value(column)) }
@@ -123,15 +134,7 @@ module FloristImport
       value("Firma").present? || value("Anrede")&.downcase == COMPANY_SALUTATION
     end
 
-    def care_of
-      department = value("Abteilung/")
-      addition = value("Adresszusa")
-      if department && addition
-        @errors << "c/o-Feld ist bereits durch Abteilung/ '#{department}' belegt, " \
-          "Adresszusa '#{addition}' kann nicht übernommen werden"
-      end
-      department || addition
-    end
+    def care_of = [value("Abteilung/"), value("Adresszusa")].compact.join(", ").presence
 
     def gv_visits
       visit = integer_code("GV Besuch")
@@ -140,6 +143,16 @@ module FloristImport
       GV_VISITS.fetch(visit) do
         @errors << "GV Besuch '#{visit}' ist nicht zugeordnet"
         [false, false]
+      end
+    end
+
+    def language
+      code = integer_code("Sprachcode")
+      return if code.nil?
+
+      LANGUAGES.fetch(code) do
+        @errors << "Sprachcode '#{code}' ist nicht zugeordnet"
+        nil
       end
     end
 
@@ -156,12 +169,26 @@ module FloristImport
     end
 
     def member_roles
-      return [] if deceased?
+      return [] if skip_reason
 
-      interested = [role(@groups.interessenten, INTERESTED_ROLE, Time.zone.today, nil)]
-      (member_codes.include?(INTERESTED_CODE) ? interested : []) +
-        section_roles(member_codes - [INTERESTED_CODE])
+      codes = member_codes - IGNORED_MEMBER_CODES
+      contact_roles(codes) + section_roles(codes - [INTERESTED_CODE, EX_MEMBER_CODE])
     end
+
+    # TBD: with X and section codes, the section roles end at Austrittsd and Ex Mitglieder starts
+    # the day after
+    def contact_roles(codes)
+      roles = []
+      if codes.include?(INTERESTED_CODE)
+        roles << role(@groups.interessenten, CONTACT_ROLE, Time.zone.today, nil)
+      end
+      if codes.include?(EX_MEMBER_CODE)
+        roles << role(@groups.ex_mitglieder, CONTACT_ROLE, ex_member_start, nil)
+      end
+      roles
+    end
+
+    def ex_member_start = date("Austrittsd")&.next_day || Time.zone.today
 
     def section_roles(codes)
       unknown = codes - MEMBER_ROLES.keys
@@ -171,20 +198,13 @@ module FloristImport
 
       section = @groups.sections[integer_code("Sektionszu")]
       unless section
-        role_error("Sektionszu '#{value("Sektionszu")}' ist nicht zugeordnet")
+        @missing_section = true
+        @notes << "Sektionszu '#{value("Sektionszu")}' ist nicht zugeordnet, " \
+          "ohne Mitgliederrolle importiert"
         return []
       end
 
-      types.map { |type| role(section, type, *member_dates(type)) }
-    end
-
-    # TBD: with X and further codes, the further roles end and Ex Mitglied starts at Austrittsd
-    def member_dates(type)
-      if type == MEMBER_ROLES[EX_MEMBER_CODE]
-        [date("Austrittsd") || date("Eintrittsd"), nil]
-      else
-        [date("Eintrittsd"), date("Austrittsd")]
-      end
+      types.map { |type| role(section, type, date("Eintrittsd"), date("Austrittsd")) }
     end
 
     def abo_roles
@@ -195,7 +215,7 @@ module FloristImport
           @notes << "Abo-Code #{code} (#{IGNORED_ABO_CODES[code]}) nicht importiert"
           nil
         else
-          role_error("Code 3 ABo '#{code}' ist unbekannt")
+          role_error("Code 3 Abo '#{code}' ist unbekannt")
         end
       end
     end
@@ -204,60 +224,15 @@ module FloristImport
       {group: group, type: type, start_on: start_on, end_on: end_on}
     end
 
-    def assert_any(roles)
-      return if roles.any? || @role_error
-
-      @errors << "Keine Rolle: Code 4 Mit und Code 3 ABo ergeben keine importierbare Rolle"
-    end
-
     def role_error(message)
-      @role_error = true
       @errors << message
       nil
     end
 
     def member_codes = codes("Code 4 Mit")
 
-    def abo_codes = codes("Code 3 ABo")
+    def abo_codes = codes("Code 3 Abo")
 
     def codes(column) = value(column).to_s.upcase.delete(UNSET_CODE).chars.uniq
-
-    def integer_code(column)
-      raw = value(column)
-      raw&.match?(INTEGER_FORMAT) ? raw.to_i.to_s : raw
-    end
-
-    def integer(column, required: false)
-      raw = value(column)
-      return raw.to_i if raw&.match?(INTEGER_FORMAT)
-
-      if raw
-        @errors << "#{column} '#{raw}' ist keine ganze Zahl"
-      elsif required
-        @errors << "#{column} fehlt"
-      end
-      required ? nil : 0
-    end
-
-    def date(column)
-      @dates ||= {}
-      return @dates[column] if @dates.key?(column)
-
-      @dates[column] = parse_date(column)
-    end
-
-    def parse_date(column)
-      raw = value(column)
-      return if raw.nil?
-
-      Date.strptime(raw, DATE_FORMAT)
-    rescue Date::Error
-      @errors << "#{column} '#{raw}' ist kein Datum im Format TT.MM.JJJJ"
-      nil
-    end
-
-    def set?(raw) = raw.present? && UNSET_VALUES.exclude?(raw.downcase)
-
-    def value(column) = @csv_row[column]&.strip.presence
   end
 end
