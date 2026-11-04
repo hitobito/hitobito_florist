@@ -20,6 +20,15 @@ module HitobitoFlorist
     ]
 
     config.to_prepare do
+      require Rails.root.join("db", "seeds", "support", "contact_account_category_seeder.rb")
+      ContactAccountCategorySeeder::CATEGORIES["PhoneNumber"]["Person"] = [
+        {key: "mobile", name: {de: "Mobil", fr: "Mobile", it: "Cellulare", en: "Mobile"}},
+        {key: "private", name: {de: "Privat", fr: "Privé", it: "Privato", en: "Private"}},
+        {key: "business",
+         name: {de: "Geschäft", fr: "Entreprise", it: "Aziendale", en: "Business"}},
+        {key: "other", name: {de: "Andere", fr: "Autre", it: "Altro", en: "Other"}}
+      ]
+
       # extend application classes here
       Group.include Florist::Group
       Person.include Florist::Person
