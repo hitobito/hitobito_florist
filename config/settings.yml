@@ -68,8 +68,8 @@ florist:
 
       - name: pr_fee_aktivmitglied_max_1_employee
         item_type: "Invoice::EmployeeCountConditionalItem"
-        account: "3001"
-        cost_center: "100"
+        account: "3007"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 25.5 # 7.5% of 340
           relevant_role_types:
@@ -90,8 +90,8 @@ florist:
 
       - name: pr_fee_aktivmitglied_max_2_employees
         item_type: "Invoice::EmployeeCountConditionalItem"
-        account: "3001"
-        cost_center: "100"
+        account: "3007"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 33 # 7.5% of 440
           relevant_role_types:
@@ -111,8 +111,8 @@ florist:
 
       - name: pr_fee_aktivmitglied_min_3_employees
         item_type: "Invoice::EmployeeCountConditionalItem"
-        account: "3001"
-        cost_center: "100"
+        account: "3007"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 40.5 # 7.5% of 540
           relevant_role_types:
@@ -131,8 +131,8 @@ florist:
 
       - name: pr_fee_per_full_time_employee
         item_type: "Invoice::FieldSumItem"
-        account: "3001"
-        cost_center: "100"
+        account: "3007"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 9.75 # 7.5% of 130
           relevant_role_types:
@@ -151,8 +151,8 @@ florist:
 
       - name: pr_fee_per_part_time_employee
         item_type: "Invoice::FieldSumItem"
-        account: "3001"
-        cost_center: "100"
+        account: "3007"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 5.4 # 7.5% of 72
           relevant_role_types:
@@ -171,8 +171,8 @@ florist:
 
       - name: pr_fee_per_branch
         item_type: "Invoice::FieldSumItem"
-        account: "3001"
-        cost_center: "100"
+        account: "3007"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 11.25 # 7.5% of 150
           relevant_role_types:
@@ -185,7 +185,7 @@ florist:
         account: "3460"
         cost_center: "700"
         dynamic_cost_parameters:
-          unit_cost: 115
+          unit_cost: 117.95
           relevant_role_types:
             - Group::Sektion::Aktivmitglied
 

@@ -71,7 +71,7 @@ describe Invoice::BatchCreate do
           ["PR-Beitrag Teilzeitangestellte", 1, 5.4, 5.4],
           ["Beitrag pro Filialbetrieb", 1, 150, 150],
           ["PR-Beitrag Filialbetriebe", 1, 11.25, 11.25],
-          ["Abo Florist (integraler Bestandteil der Aktivmitgliedschaft)", 1, 115, 115],
+          ["Abo Florist (integraler Bestandteil der Aktivmitgliedschaft)", 1, 117.95, 117.95],
           ["Gutschrift pro Lernende", 1, -60, -60],
           ["Gutschrift Besuch Generalversammlung florist.ch", 1, -100, -100],
           # Sektion Aargau
