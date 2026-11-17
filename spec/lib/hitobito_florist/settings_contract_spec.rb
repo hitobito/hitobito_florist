@@ -62,6 +62,13 @@ describe HitobitoFlorist::SettingsContract do
     expect(errors_of(:sections, index)[:dynamic_cost_parameters]).to include("must contain field")
   end
 
+  it "rejects a non-boolean only_exclude_first_year_lehrlingsabos" do
+    dachverband_fees[0][:dynamic_cost_parameters][:only_exclude_first_year_lehrlingsabos] = "abc"
+
+    expect(errors_of(:dachverband, 0).dig(:dynamic_cost_parameters,
+      :only_exclude_first_year_lehrlingsabos)).to include("must be boolean")
+  end
+
   it "rejects an employee count conditional item without min_employees" do
     index = dachverband_fees.index do |fee|
       fee[:item_type] == "Invoice::EmployeeCountConditionalItem"

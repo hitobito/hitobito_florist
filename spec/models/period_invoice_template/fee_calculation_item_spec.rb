@@ -43,7 +43,7 @@ describe PeriodInvoiceTemplate::FeeCalculationItem do
     it "generates the items of the umbrella organisation and of every invoiced section" do
       # 20 items of the Dachverband, plus the items with a non zero unit cost of the six
       # sections which do not invoice their members themselves
-      expect(generated.size).to eq 66
+      expect(generated.size).to eq 72
     end
 
     it "passes the period of the template to every item" do
@@ -56,7 +56,8 @@ describe PeriodInvoiceTemplate::FeeCalculationItem do
       expect(generated.map(&:class).uniq.map(&:name)).to contain_exactly(
         "Invoice::EmployeeCountConditionalItem",
         "Invoice::FieldSumItem",
-        "Invoice::FilterCountItem"
+        "Invoice::FilterCountItem",
+        "Invoice::FilterCountExcludingLehrlingsaboItem"
       )
     end
 
@@ -120,6 +121,60 @@ describe PeriodInvoiceTemplate::FeeCalculationItem do
           expect(generated.map(&:name)).not_to include(/#{section.name}/)
           expect(generated.map(&:section_id)).not_to include(section.id)
         end
+      end
+    end
+
+    describe "fees of a Berufsmitglied plus in apprenticeship" do
+      let(:person) { Fabricate(:person) }
+      let(:generated) do
+        item.to_invoice_item_for_people(invoice: Fabricate(:invoice, group: root),
+          recipient_people: Person.where(id: person))
+      end
+
+      before do
+        Fabricate(Group::Sektion::Berufsmitgliedplus.sti_name, group: aargau, person: person,
+          start_on: Date.new(2024, 8, 1))
+      end
+
+      def counts
+        [
+          generated_named(:base_fee_berufsmitgliedplus),
+          generated_named(:subscription_fachmagazin),
+          generated_named(:section_base_fee_berufsmitgliedplus, section: aargau.name)
+        ].map(&:count)
+      end
+
+      def lehrlingsabo(start_on:, end_on: nil)
+        Fabricate(Group::DachverbandAbonnemente::Lehrlingsabo.sti_name,
+          group: groups(:abonnemente), person: person, start_on:, end_on:)
+      end
+
+      it "charges nothing in the year the Lehrlingsabo starts" do
+        lehrlingsabo(start_on: Date.new(2026, 8, 1))
+        expect(counts).to eq [0, 0, 0]
+      end
+
+      it "charges nothing in the year after the Lehrlingsabo starts" do
+        lehrlingsabo(start_on: Date.new(2025, 11, 17))
+        expect(counts).to eq [0, 0, 0]
+      end
+
+      it "charges only the base fee in later years of the Lehrlingsabo" do
+        lehrlingsabo(start_on: Date.new(2024, 8, 1))
+        expect(counts).to eq [1, 0, 0]
+      end
+
+      it "charges the section base fee of a Berufsmitglied with Lehrlingsabo" do
+        Fabricate(Group::Sektion::Berufsmitglied.sti_name, group: aargau, person: person,
+          start_on: Date.new(2024, 8, 1))
+        lehrlingsabo(start_on: Date.new(2026, 8, 1))
+        section_base_fee = generated_named(:section_base_fee_berufsmitglied, section: aargau.name)
+        expect(section_base_fee.count).to eq 1
+      end
+
+      it "charges all fees after the Lehrlingsabo has ended" do
+        lehrlingsabo(start_on: Date.new(2022, 8, 1), end_on: Date.new(2025, 7, 31))
+        expect(counts).to eq [1, 1, 1]
       end
     end
 

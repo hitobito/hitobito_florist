@@ -8,6 +8,7 @@
 class HitobitoFlorist::SettingsContract < SettingsContract
   ITEM_TYPES = %w[
     Invoice::FilterCountItem
+    Invoice::FilterCountExcludingLehrlingsaboItem
     Invoice::FieldSumItem
     Invoice::EmployeeCountConditionalItem
   ].freeze
@@ -18,6 +19,7 @@ class HitobitoFlorist::SettingsContract < SettingsContract
     optional(:min_employees).filled(:integer)
     optional(:max_employees).filled(:integer)
     optional(:where).hash
+    optional(:only_exclude_first_year_lehrlingsabos).filled(:bool)
   end
 
   params(SettingsContract.__schema__) do
