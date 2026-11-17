@@ -117,7 +117,7 @@ describe Invoice::BatchCreate do
       expect(items_of(person).map { |i| [i.name, i.cost] }).to contain_exactly(
         ["Fixe Grundtaxe Berufsmitglieder plus", 50],
         ["Abo Fachmagazin Floristen", 77.95],
-        ["Fixe Grundtaxe Berufsmitglieder Sektion Aargau", 50]
+        ["Fixe Grundtaxe Berufsmitglieder plus Sektion Aargau", 50]
       )
     end
   end

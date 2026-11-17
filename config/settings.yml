@@ -221,16 +221,17 @@ florist:
             - Group::Sektion::Berufsmitglied
 
       - name: base_fee_berufsmitgliedplus
-        item_type: "Invoice::FilterCountItem"
+        item_type: "Invoice::FilterCountExcludingLehrlingsaboItem"
         account: "3005"
         cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 50
           relevant_role_types:
             - Group::Sektion::Berufsmitgliedplus
+          only_exclude_first_year_lehrlingsabos: true
 
       - name: subscription_fachmagazin
-        item_type: "Invoice::FilterCountItem"
+        item_type: "Invoice::FilterCountExcludingLehrlingsaboItem"
         vat_rate: 2.6
         account: "3460"
         cost_center: "700"
@@ -312,6 +313,12 @@ florist:
           unit_cost: section_berufsmitglied_base_fee
           relevant_role_types:
             - Group::Sektion::Berufsmitglied
+
+      - name: section_base_fee_berufsmitgliedplus
+        item_type: "Invoice::FilterCountExcludingLehrlingsaboItem"
+        dynamic_cost_parameters:
+          unit_cost: section_berufsmitglied_base_fee
+          relevant_role_types:
             - Group::Sektion::Berufsmitgliedplus
 
       - name: section_base_fee_partnermitglied
