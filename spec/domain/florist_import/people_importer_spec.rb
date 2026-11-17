@@ -103,8 +103,9 @@ describe FloristImport::PeopleImporter, :with_truemail_validation do
         visited_gv_dachverband: false, visited_gv_sektion: true)
     end
 
-    it "joins Abteilung and Adresszusatz into c/o" do
-      expect(Person.find(1008).address_care_of).to eq "Einkauf, c/o Hans Muster"
+    it "imports Abteilung as c/o and Adresszusatz as address addition" do
+      expect(Person.find(1008)).to have_attributes(address_care_of: "Einkauf",
+        address_addition: "c/o Hans Muster")
     end
 
     it "adds the Mutationsdatum as note of the root user" do

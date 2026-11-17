@@ -168,19 +168,22 @@ describe FloristImport::Row do
   end
 
   describe "c/o-Feld" do
-    it "takes Abteilung" do
+    it "takes Abteilung as c/o" do
       values["Abteilung/"] = "Einkauf"
       expect(attrs["address_care_of"]).to eq "Einkauf"
+      expect(attrs).not_to have_key("address_addition")
     end
 
-    it "takes Adresszusatz" do
+    it "takes Adresszusatz as address addition" do
       values["Adresszusa"] = "c/o Hans Muster"
-      expect(attrs["address_care_of"]).to eq "c/o Hans Muster"
+      expect(attrs["address_addition"]).to eq "c/o Hans Muster"
+      expect(attrs).not_to have_key("address_care_of")
     end
 
-    it "joins Abteilung and Adresszusatz" do
+    it "keeps Abteilung and Adresszusatz separate" do
       values.merge!("Abteilung/" => "Einkauf", "Adresszusa" => "c/o Hans Muster")
-      expect(attrs["address_care_of"]).to eq "Einkauf, c/o Hans Muster"
+      expect(attrs).to include("address_care_of" => "Einkauf",
+        "address_addition" => "c/o Hans Muster")
       expect(row.errors).to be_empty
     end
   end

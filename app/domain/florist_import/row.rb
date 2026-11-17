@@ -79,7 +79,8 @@ module FloristImport
         "town" => value("Ortschaft"),
         "country" => value("Land"),
         "canton" => value("Kanton")&.downcase,
-        "address_care_of" => care_of
+        "address_care_of" => value("Abteilung/"),
+        "address_addition" => value("Adresszusa")
       }
     end
 
@@ -110,8 +111,6 @@ module FloristImport
     def company?
       value("Firma").present? || value("Anrede")&.downcase == Mappings::COMPANY_SALUTATION
     end
-
-    def care_of = [value("Abteilung/"), value("Adresszusa")].compact.join(", ").presence
 
     def gv_visits
       visit = @cells.integer_code("GV Besuch")

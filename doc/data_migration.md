@@ -40,8 +40,8 @@ tagged `Datenmigration:Sektion fehlt`.
 Every imported person gets a Kontakt role in the group "Import Datenmigration" below the root
 group. Code I adds a Kontakt role in "Interessenten", code X one in "Ex Mitglieder" starting the
 day after `Austrittsd`. Missing contact groups are created. Rows with code V, U or G are skipped,
-code N is ignored. `Abteilung/` and `Adresszusa` are joined into the c/o field, `TextBox` is not
-imported, and `Mutationsd` is added as a note authored by the root user.
+code N is ignored. `Abteilung/` is imported as c/o address and `Adresszusa` as address addition,
+`TextBox` is not imported, and `Mutationsd` is added as a note authored by the root user.
 
 Dates (`Geburtstag`, `Eintrittsd`, `Austrittsd`, `Abo Beginn`, `Abo Ende`) must be in the
 export format `YYYY-MM-DD`, other formats reject the row. `Sprachcode` 1 maps to German, 2 to
