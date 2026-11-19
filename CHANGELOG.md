@@ -1,6 +1,6 @@
 # Hitobito Florist Changelog
 
-## unreleased
+## Version 2.11
 
 * Berufsmitglieder plus mit Lehrlingsabo bezahlen in der Sammelrechnung im Start- und Folgejahr des Abos keine Beiträge und danach nur die Grundtaxe Berufsmitglieder plus (hitobito_florist#17)
 
