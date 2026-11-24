@@ -13,6 +13,8 @@ application:
     fr: Français
     it: Italiano
 
+  german_variant: de_CH
+
   # non UI languages for assigning to person#language
   # additional_languages:
   #   en: Englisch
