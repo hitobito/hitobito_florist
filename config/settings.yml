@@ -124,7 +124,7 @@ florist:
       - name: fee_per_full_time_employee
         item_type: "Invoice::FieldSumItem"
         account: "3001"
-        cost_center: "100"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 130
           relevant_role_types:
@@ -144,7 +144,7 @@ florist:
       - name: fee_per_part_time_employee
         item_type: "Invoice::FieldSumItem"
         account: "3001"
-        cost_center: "100"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 72
           relevant_role_types:
@@ -164,7 +164,7 @@ florist:
       - name: fee_per_branch
         item_type: "Invoice::FieldSumItem"
         account: "3001"
-        cost_center: "110"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: 150
           relevant_role_types:
@@ -193,8 +193,8 @@ florist:
 
       - name: credit_per_apprentice
         item_type: "Invoice::FieldSumItem"
-        account: "3001"
-        cost_center: "100"
+        account: "3010"
+        cost_center: "310"
         dynamic_cost_parameters:
           unit_cost: -60
           relevant_role_types:
@@ -203,7 +203,7 @@ florist:
 
       - name: credit_gv_dachverband
         item_type: "Invoice::FilterCountItem"
-        account: "3020"
+        account: "2299"
         cost_center: "100"
         dynamic_cost_parameters:
           unit_cost: -100
