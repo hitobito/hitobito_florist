@@ -43,7 +43,7 @@ describe PeriodInvoiceTemplate::FeeCalculationItem do
     it "generates the items of the umbrella organisation and of every invoiced section" do
       # 20 items of the Dachverband, plus the items with a non zero unit cost of the six
       # sections which do not invoice their members themselves
-      expect(generated.size).to eq 72
+      expect(generated.size).to eq 71
     end
 
     it "passes the period of the template to every item" do
@@ -104,11 +104,8 @@ describe PeriodInvoiceTemplate::FeeCalculationItem do
         expect(credit.unit_cost).to eq(-100)
       end
 
-      it "charges the advertising fee only in sections which collect one" do
-        advertising = generated_named(:section_advertising_fee, section: "Zürich")
-        expect(advertising.unit_cost).to eq 60
-        expect(advertising.account).to eq "2296"
-        expect(generated_named(:section_advertising_fee, section: aargau.name)).to be_nil
+      it "does not charge a Propaganda- und Werbebeitrag, it is part of the base fee" do
+        expect(generated.map(&:name)).not_to include(/Werbebeitrag/)
       end
 
       it "skips amounts the section does not charge" do

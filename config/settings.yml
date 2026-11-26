@@ -302,13 +302,6 @@ florist:
             people:
               visited_gv_sektion: true
 
-      - name: section_advertising_fee
-        item_type: "Invoice::FilterCountItem"
-        dynamic_cost_parameters:
-          unit_cost: section_advertising_fee
-          relevant_role_types:
-            - Group::Sektion::Aktivmitglied
-
       - name: section_base_fee_berufsmitglied
         item_type: "Invoice::FilterCountItem"
         dynamic_cost_parameters:

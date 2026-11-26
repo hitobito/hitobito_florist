@@ -30,7 +30,6 @@ section_fees = {
     section_part_time_employee_fee: 25,
     section_branch_fee: 50,
     section_credit_gv_visit: -100,
-    section_advertising_fee: 0,
     section_fee_account: "2291",
     exclude_from_yearly_membership_invoicing: false
   },
@@ -43,7 +42,6 @@ section_fees = {
     section_part_time_employee_fee: 20,
     section_branch_fee: 20,
     section_credit_gv_visit: 0,
-    section_advertising_fee: 0,
     section_fee_account: "2292",
     exclude_from_yearly_membership_invoicing: true
   },
@@ -56,7 +54,6 @@ section_fees = {
     section_part_time_employee_fee: 20,
     section_branch_fee: 0,
     section_credit_gv_visit: -100,
-    section_advertising_fee: 0,
     section_fee_account: "2293",
     exclude_from_yearly_membership_invoicing: false
   },
@@ -69,7 +66,6 @@ section_fees = {
     section_part_time_employee_fee: 25,
     section_branch_fee: 60,
     section_credit_gv_visit: -50,
-    section_advertising_fee: 100,
     section_fee_account: "2294",
     exclude_from_yearly_membership_invoicing: true
   },
@@ -82,7 +78,6 @@ section_fees = {
     section_part_time_employee_fee: 15,
     section_branch_fee: 0,
     section_credit_gv_visit: -50,
-    section_advertising_fee: 0,
     section_fee_account: "2295",
     exclude_from_yearly_membership_invoicing: false
   },
@@ -95,7 +90,6 @@ section_fees = {
     section_part_time_employee_fee: 20,
     section_branch_fee: 50,
     section_credit_gv_visit: -50,
-    section_advertising_fee: 60,
     section_fee_account: "2296",
     exclude_from_yearly_membership_invoicing: false
   },
@@ -108,7 +102,6 @@ section_fees = {
     section_part_time_employee_fee: 20,
     section_branch_fee: 50,
     section_credit_gv_visit: 0,
-    section_advertising_fee: 0,
     section_fee_account: "2297",
     exclude_from_yearly_membership_invoicing: false
   },
@@ -121,7 +114,6 @@ section_fees = {
     section_part_time_employee_fee: 25,
     section_branch_fee: 50,
     section_credit_gv_visit: -50,
-    section_advertising_fee: 0,
     section_fee_account: "2298",
     exclude_from_yearly_membership_invoicing: false
   }

@@ -16,8 +16,7 @@ module Florist::Group
     :section_full_time_employee_fee,
     :section_part_time_employee_fee,
     :section_branch_fee,
-    :section_credit_gv_visit,
-    :section_advertising_fee
+    :section_credit_gv_visit
   ].freeze
 
   included do
