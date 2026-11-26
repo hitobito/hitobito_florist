@@ -8,164 +8,190 @@ fr:
   activerecord:
     attributes:
       person:
-        id: Mitgliedernummer
-        full_time_employee_count: Anzahl Vollzeitangestellte
-        part_time_employee_count: Anzahl Teilzeitangestellte
-        apprentice_count: Anzahl Lernende
-        branch_count: Anzahl Filialen
-        visited_gv_dachverband: GV Besuch Dachverband
-        visited_gv_sektion: GV Besuch Sektion
+        id: Numéro de membre
+        full_time_employee_count: Nombre d'employés à temps plein
+        part_time_employee_count: " Nombre d'employés à temps partiel"
+        apprentice_count: " Nombre d'apprenants"
+        branch_count: " Nombre de magasins"
+        visited_gv_dachverband: Participation à l’assemblée générale
+        visited_gv_sektion: Adhésion membre professionnel – section
 
     models:
 
       ### INVOICES
 
       period_invoice_template/fee_calculation_item:
-        one: Mitgliedschaftsbeiträge
-        other: Mitgliedschaftsbeiträge
+        one: Cotisation
+        many: Cotisations des membres
+        other: Cotisations des membres
 
       ### GROUPS
 
       group/dachverband:
-        one: Dachverband
-        other: Dachverbände
+        one: ' Organisation faîtière'
+        many: ' Organisations faîtières'
+        other: ' Organisations faîtières'
 
       group/dachverband_kontakte:
-        one: Kontakte
-        other: Kontakte
+        one: Contact
+        many: Contacts
+        other: Contacts
 
       group/dachverband_abonnemente:
-        one: Abonnemente
-        other: Abonnemente
+        one: Abonnement
+        many: Abonnements
+        other: Abonnements
 
       group/sektion:
-        one: Sektion
-        other: Sektionen
+        one: Section
+        many: Sections
+        other: Sections
 
 
       ### ROLES
 
       group/sektion/sektion:
-        one: Sektion
-        other: Sektionen
+        one: Section
+        many: Sections
+        other: Sections
 
       group/dachverband/administrator:
-        one: "Administrator:in"
-        other: "Administrator:innen"
+        one: "Administrateur"
+        many: "Administrateurs"
+        other: "Administrateurs"
 
       group/dachverband/mitarbeiter:
-        one: "Mitarbeiter:in"
-        other: "Mitarbeiter:innen"
+        one: "Collaborateur"
+        many: "Collaborateurs"
+        other: "Collaborateurs"
 
       group/dachverband_kontakte/kontakt:
-        one: Kontakt
-        other: Kontakte
+        one: Contact
+        many: Contacts
+        other: Contacts
 
       group/dachverband_abonnemente/jahresabo_schweiz:
-        one: Jahresabo Schweiz
-        other: Jahresabo Schweiz
+        one: Abonnement annuel en Suisse
+        many: Abonnement annuel en Suisse
+        other: Abonnement annuel en Suisse
 
       group/dachverband_abonnemente/jahresabo_mitglied:
-        one: Jahresabo Mitglied
-        other: Jahresabo Mitglied
+        one: Abonnement annuel pour les membres
+        many: Abonnement annuel pour les membres
+        other: Abonnement annuel pour les membres
 
       group/dachverband_abonnemente/jahresabo_europa:
-        one: Jahresabo Europa
-        other: Jahresabo Europa
+        one: ' Abonnement annuel Europe'
+        many: ' Abonnement annuel Europe'
+        other: ' Abonnement annuel Europe'
 
       group/dachverband_abonnemente/probeabo:
-        one: Probeabo
-        other: Probeabo
+        one: Abonnement d'essai
+        many: Abonnement d'essai
+        other: Abonnement d'essai
 
       group/dachverband_abonnemente/lehrlingsabo:
-        one: Lehrlingsabo
-        other: Lehrlingsabo
+        one: Abonnement pour apprentis
+        many: Abonnement pour apprentis
+        other: Abonnement pour apprentis
 
       group/dachverband_abonnemente/gratisabo:
-        one: Gratisabo
-        other: Gratisabo
+        one: Abonnement gratuit
+        many: Abonnement gratuit
+        other: Abonnement gratuit
 
       group/dachverband_abonnemente/lehrgang_floristik:
-        one: Lehrgang Floristik
-        other: Lehrgang Floristik
+        one: ' Formation en art floral'
+        many: ' Formation en art floral'
+        other: ' Formation en art floral'
 
       group/dachverband_abonnemente/b_mplus:
         one: BM-plus
         other: BM-plus
 
       group/sektion/aktivmitglied:
-        one: Aktivmitglied
-        other: Aktivmitglieder
+        one: ' Membre actif'
+        many: ' Membres actifs'
+        other: ' Membres actifs'
 
       group/sektion/berufsmitglied:
-        one: Berufsmitglied
-        other: Berufsmitglieder
+        one: Membre professionnel
+        many: Membres professionnels
+        other: Membres professionnels
 
       group/sektion/berufsmitgliedplus:
-        one: Berufsmitglied plus
-        other: Berufsmitglieder plus
+        one: Membre professionnel Plus
+        many: Membres professionnel Plus
+        other: Membre professionnel Plus
 
       group/sektion/start_up:
-        one: StartUp
+        one: StartUps
+        many: StartUps
         other: StartUps
 
       group/sektion/ehrenmitglied:
-        one: Ehrenmitglied
-        other: Ehrenmitglieder
+        one: Membre d'honneur
+        many: Membres d'honneur
+        other: Membres d'honneur
 
       group/sektion/filiale:
-        one: Filiale
-        other: Filialen
+        one: Magasin
+        many: Magasins
+        other: Magasins
 
       group/sektion/entdecker:
-        one: Entdecker
-        other: Entdecker
+        one: Explorateur
+        many: Explorateurs
+        other: Explorateur
 
       group/sektion/partnermitglied:
-        one: Partnermitglied
-        other: Partnermitglieder
+        one: Membre partenaire
+        many: Membres partenaires
+        other: Membres partenaires
 
       group/sektion/passivmitglied:
-        one: Passivmitglied
-        other: Passivmitglieder
+        one: Membre passif
+        many: Membres passifs
+        other: Membres passifs
 
       group/sektion/ex_mitglied:
-        one: Ex Mitglied
-        other: Ex Mitglieder
+        one: Ancien membre
+        many: Anciens membres
+        other: Anciens membres
 
   period_invoice_template:
     fee_calculation_item_fields:
-      explanation: Generiert die Rechnungsposten des Dachverbands sowie der Sektionen.
+      explanation: " Génère les postes de facture de l'association faîtière et des sections."
 
   florist:
     membership_fee_items:
-      base_fee_aktivmitglied_max_1_employee: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) bis 1 Mitarbeiter
-      pr_fee_aktivmitglied_max_1_employee: PR-Beitrag fixe Grundtaxe Aktivmitglieder bis 1 Mitarbeiter
-      base_fee_aktivmitglied_max_2_employees: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) bis 2 Mitarbeiter
-      pr_fee_aktivmitglied_max_2_employees: PR-Beitrag fixe Grundtaxe Aktivmitglieder bis 2 Mitarbeiter
-      base_fee_aktivmitglied_min_3_employees: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) 3 und mehr Mitarbeiter
-      pr_fee_aktivmitglied_min_3_employees: PR-Beitrag fixe Grundtaxe Aktivmitglieder 3 und mehr Mitarbeiter
-      fee_per_full_time_employee: Beitrag pro Angestellte 80 - 100 %
-      pr_fee_per_full_time_employee: PR-Beitrag Angestellte
-      fee_per_part_time_employee: Beitrag pro Teilzeitangestellte 10 - 79 %
-      pr_fee_per_part_time_employee: PR-Beitrag Teilzeitangestellte
-      fee_per_branch: Beitrag pro Filialbetrieb
-      pr_fee_per_branch: PR-Beitrag Filialbetriebe
-      subscription_florist: Abo Florist (integraler Bestandteil der Aktivmitgliedschaft)
-      credit_per_apprentice: Gutschrift pro Lernende
-      credit_gv_dachverband: Gutschrift Besuch Generalversammlung florist.ch
-      base_fee_berufsmitglied: Fixe Grundtaxe Berufsmitglieder
-      base_fee_berufsmitgliedplus: Fixe Grundtaxe Berufsmitglieder plus
-      subscription_fachmagazin: Abo Fachmagazin Floristen
-      base_fee_partnermitglied: Fixe Grundtaxe Partnermitglieder
-      base_fee_passivmitglied: Fixe Grundtaxe Passivmitglieder
-      section_base_fee_aktivmitglied: "Fixe Grundtaxe Aktivmitglieder Sektion %{section}"
-      section_fee_per_full_time_employee: "Beitrag pro Angestellte 80 - 100 % Sektion %{section}"
-      section_fee_per_part_time_employee: "Beitrag pro Teilzeitangestellte 10 - 79 % Sektion %{section}"
-      section_fee_per_branch: "Beitrag pro Filialbetrieb Sektion %{section}"
-      section_credit_gv_sektion: "Gutschrift Besuch Generalversammlung Sektion %{section}"
-      section_advertising_fee: "Propaganda- und Werbebeitrag Sektion %{section}"
-      section_base_fee_berufsmitglied: "Fixe Grundtaxe Berufsmitglieder Sektion %{section}"
-      section_base_fee_berufsmitgliedplus: "Fixe Grundtaxe Berufsmitglieder plus Sektion %{section}"
-      section_base_fee_partnermitglied: "Fixe Grundtaxe Partnermitglieder Sektion %{section}"
-      section_base_fee_passivmitglied: "Fixe Grundtaxe Passivmitglied Sektion %{section}"
+      base_fee_aktivmitglied_max_1_employee: Cotisation de membre actif
+      pr_fee_aktivmitglied_max_1_employee: "Contribution RP – taxe de base fixe des membres actifs 7,5 %"
+      base_fee_aktivmitglied_max_2_employees: Cotisation de membre actif
+      pr_fee_aktivmitglied_max_2_employees: "Contribution RP – taxe de base fixe des membres actifs 7,5 %"
+      base_fee_aktivmitglied_min_3_employees: Cotisation de membre actif
+      pr_fee_aktivmitglied_min_3_employees: "Contribution RP – taxe de base fixe des membres actifs 7,5 %"
+      fee_per_full_time_employee: Cotisation par salarié(e) à 80–100 %
+      pr_fee_per_full_time_employee: "Contribution RP – personnel salarié 7,5 %"
+      fee_per_part_time_employee: Cotisation par salarié(e) à temps partiel à 10–79 %
+      pr_fee_per_part_time_employee: "Contribution RP – personnel à temps partiel 7,5 %"
+      fee_per_branch: Cotisation par succursale
+      pr_fee_per_branch: Contribution RP – succursales
+      subscription_florist: "Abonnement Florist:in (partie intégrante de l’adhésion en tant que membre actif)"
+      credit_per_apprentice: Crédit par apprenti(e)
+      credit_gv_dachverband: Crédit pour la participation à l’assemblée générale de florist.ch
+      base_fee_berufsmitglied: Adhésion en tant que membre professionnel
+      base_fee_berufsmitgliedplus: Adhésion en tant que membre professionnel Plus
+      subscription_fachmagazin: "Abonnement du magazine professionnel Florist:in"
+      base_fee_partnermitglied: Taxe de base fixe des membres partenaires
+      base_fee_passivmitglied: Taxe de base fixe des membres passifs
+      section_base_fee_aktivmitglied: "Cotisation de membre – section %{section}"
+      section_fee_per_full_time_employee: "Cotisation par salarié(e) à 80–100 % – section %{section}"
+      section_fee_per_part_time_employee: "Cotisation par salarié(e) à temps partiel à 10–79 % – section %{section}"
+      section_fee_per_branch: "Cotisation par succursale – section %{section}"
+      section_credit_gv_sektion: "Crédit pour participation à l’assemblée générale – section %{section}"
+      section_advertising_fee: "Contribution à la promotion et à la publicité – section %{section}"
+      section_base_fee_berufsmitglied: "Adhésion membre professionnel – section %{section}"
+      section_base_fee_berufsmitgliedplus: "Adhésion membre professionnel Plus – section %{section}"
+      section_base_fee_partnermitglied: "Taxe de base fixe des membres partenaires – section %{section}"
+      section_base_fee_passivmitglied: "Taxe de base fixe des membres passifs – section %{section}"

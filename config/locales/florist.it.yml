@@ -8,13 +8,13 @@ it:
   activerecord:
     attributes:
       person:
-        id: Mitgliedernummer
-        full_time_employee_count: Anzahl Vollzeitangestellte
-        part_time_employee_count: Anzahl Teilzeitangestellte
-        apprentice_count: Anzahl Lernende
-        branch_count: Anzahl Filialen
-        visited_gv_dachverband: GV Besuch Dachverband
-        visited_gv_sektion: GV Besuch Sektion
+        id: Numero di iscrizione
+        full_time_employee_count: " Numero di dipendenti a tempo pieno"
+        part_time_employee_count: " Numero di dipendenti a tempo parziale"
+        apprentice_count: " Numero di studenti"
+        branch_count: Numero di filiali
+        visited_gv_dachverband: Partecipazione all’assemblea generale
+        visited_gv_sektion: Partecipazione all’assemblea generale – sezione
 
     models:
 
@@ -139,33 +139,33 @@ it:
 
   florist:
     membership_fee_items:
-      base_fee_aktivmitglied_max_1_employee: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) bis 1 Mitarbeiter
-      pr_fee_aktivmitglied_max_1_employee: PR-Beitrag fixe Grundtaxe Aktivmitglieder bis 1 Mitarbeiter
-      base_fee_aktivmitglied_max_2_employees: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) bis 2 Mitarbeiter
-      pr_fee_aktivmitglied_max_2_employees: PR-Beitrag fixe Grundtaxe Aktivmitglieder bis 2 Mitarbeiter
-      base_fee_aktivmitglied_min_3_employees: Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) 3 und mehr Mitarbeiter
-      pr_fee_aktivmitglied_min_3_employees: PR-Beitrag fixe Grundtaxe Aktivmitglieder 3 und mehr Mitarbeiter
-      fee_per_full_time_employee: Beitrag pro Angestellte 80 - 100 %
-      pr_fee_per_full_time_employee: PR-Beitrag Angestellte
-      fee_per_part_time_employee: Beitrag pro Teilzeitangestellte 10 - 79 %
-      pr_fee_per_part_time_employee: PR-Beitrag Teilzeitangestellte
-      fee_per_branch: Beitrag pro Filialbetrieb
-      pr_fee_per_branch: PR-Beitrag Filialbetriebe
-      subscription_florist: Abo Florist (integraler Bestandteil der Aktivmitgliedschaft)
-      credit_per_apprentice: Gutschrift pro Lernende
-      credit_gv_dachverband: Gutschrift Besuch Generalversammlung florist.ch
-      base_fee_berufsmitglied: Fixe Grundtaxe Berufsmitglieder
-      base_fee_berufsmitgliedplus: Fixe Grundtaxe Berufsmitglieder plus
-      subscription_fachmagazin: Abo Fachmagazin Floristen
-      base_fee_partnermitglied: Fixe Grundtaxe Partnermitglieder
-      base_fee_passivmitglied: Fixe Grundtaxe Passivmitglieder
-      section_base_fee_aktivmitglied: "Fixe Grundtaxe Aktivmitglieder Sektion %{section}"
-      section_fee_per_full_time_employee: "Beitrag pro Angestellte 80 - 100 % Sektion %{section}"
-      section_fee_per_part_time_employee: "Beitrag pro Teilzeitangestellte 10 - 79 % Sektion %{section}"
-      section_fee_per_branch: "Beitrag pro Filialbetrieb Sektion %{section}"
-      section_credit_gv_sektion: "Gutschrift Besuch Generalversammlung Sektion %{section}"
-      section_advertising_fee: "Propaganda- und Werbebeitrag Sektion %{section}"
-      section_base_fee_berufsmitglied: "Fixe Grundtaxe Berufsmitglieder Sektion %{section}"
-      section_base_fee_berufsmitgliedplus: "Fixe Grundtaxe Berufsmitglieder plus Sektion %{section}"
-      section_base_fee_partnermitglied: "Fixe Grundtaxe Partnermitglieder Sektion %{section}"
-      section_base_fee_passivmitglied: "Fixe Grundtaxe Passivmitglied Sektion %{section}"
+      base_fee_aktivmitglied_max_1_employee: Quota associativa membri attivi
+      pr_fee_aktivmitglied_max_1_employee: "Contributo PR – quota base fissa membri attivi 7,5%"
+      base_fee_aktivmitglied_max_2_employees: Quota associativa membri attivi
+      pr_fee_aktivmitglied_max_2_employees: "Contributo PR – quota base fissa membri attivi 7,5%"
+      base_fee_aktivmitglied_min_3_employees: Quota associativa membri attivi
+      pr_fee_aktivmitglied_min_3_employees: "Contributo PR – quota base fissa membri attivi 7,5%"
+      fee_per_full_time_employee: Quota per dipendente con grado di occupazione 80–100%
+      pr_fee_per_full_time_employee: "Contributo PR – dipendenti 7,5%"
+      fee_per_part_time_employee: Quota per dipendente a tempo parziale con grado di occupazione 10–79%
+      pr_fee_per_part_time_employee: "Contributo PR – dipendenti a tempo parziale 7,5%"
+      fee_per_branch: Quota per succursale
+      pr_fee_per_branch: Contributo PR – succursali
+      subscription_florist: "Abbonamento alla rivista Florist:in (parte integrante dell’affiliazione come membro attivo)"
+      credit_per_apprentice: Accredito per apprendista
+      credit_gv_dachverband: Accredito per la partecipazione all’assemblea generale di florist.ch
+      base_fee_berufsmitglied: Affiliazione come membro professionale
+      base_fee_berufsmitgliedplus: Affiliazione come membro professionale Plus
+      subscription_fachmagazin: "Abbonamento alla rivista professionale Florist:in"
+      base_fee_partnermitglied: Quota base fissa per membri partner
+      base_fee_passivmitglied: Quota base fissa per membri passivi
+      section_base_fee_aktivmitglied: "Quota associativa – sezione %{section}"
+      section_fee_per_full_time_employee: "Quota per dipendente con grado di occupazione 80–100% – sezione %{section}"
+      section_fee_per_part_time_employee: "Quota per dipendente a tempo parziale con grado di occupazione 10–79% – sezione %{section}"
+      section_fee_per_branch: "Quota per succursale – sezione %{section}"
+      section_credit_gv_sektion: "Accredito per la partecipazione all’assemblea generale – sezione %{section}"
+      section_advertising_fee: "Contributo per promozione e pubblicità – sezione %{section}"
+      section_base_fee_berufsmitglied: "Affiliazione come membro professionale – sezione %{section}"
+      section_base_fee_berufsmitgliedplus: "Affiliazione come membro professionale Plus – sezione %{section}"
+      section_base_fee_partnermitglied: "Quota base fissa per membri partner – sezione %{section}"
+      section_base_fee_passivmitglied: "Quota base fissa per membri passivi – sezione %{section}"
