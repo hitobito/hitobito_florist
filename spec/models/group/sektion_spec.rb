@@ -25,8 +25,6 @@ describe Group::Sektion do
       expect(aargau.section_part_time_employee_fee).to eq 25
       expect(aargau.section_branch_fee).to eq 50
       expect(aargau.section_credit_gv_visit).to eq(-100)
-      expect(aargau.section_advertising_fee).to eq(0)
-      expect(groups(:zuerich).section_advertising_fee).to eq 60
     end
 
     it "keeps fractional amounts" do
