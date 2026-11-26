@@ -164,7 +164,6 @@ it:
       section_fee_per_part_time_employee: "Quota per dipendente a tempo parziale con grado di occupazione 10–79% – sezione %{section}"
       section_fee_per_branch: "Quota per succursale – sezione %{section}"
       section_credit_gv_sektion: "Accredito per la partecipazione all’assemblea generale – sezione %{section}"
-      section_advertising_fee: "Contributo per promozione e pubblicità – sezione %{section}"
       section_base_fee_berufsmitglied: "Affiliazione come membro professionale – sezione %{section}"
       section_base_fee_berufsmitgliedplus: "Affiliazione come membro professionale Plus – sezione %{section}"
       section_base_fee_partnermitglied: "Quota base fissa per membri partner – sezione %{section}"

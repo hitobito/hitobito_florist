@@ -164,7 +164,6 @@ de_CH:
       section_fee_per_part_time_employee: "Beitrag pro Teilzeitangestellte 10 - 79 % Sektion %{section}"
       section_fee_per_branch: "Beitrag pro Filialbetrieb Sektion %{section}"
       section_credit_gv_sektion: "Gutschrift Besuch Generalversammlung Sektion %{section}"
-      section_advertising_fee: "Propaganda- und Werbebeitrag Sektion %{section}"
       section_base_fee_berufsmitglied: "Berufsmitgliedschaft Sektion %{section}"
       section_base_fee_berufsmitgliedplus: "Berufsmitgliedschaft Plus Sektion %{section}"
       section_base_fee_partnermitglied: "Partnermitgliedschaft %{section}"

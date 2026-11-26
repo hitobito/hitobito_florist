@@ -190,7 +190,6 @@ fr:
       section_fee_per_part_time_employee: "Cotisation par salarié(e) à temps partiel à 10–79 % – section %{section}"
       section_fee_per_branch: "Cotisation par succursale – section %{section}"
       section_credit_gv_sektion: "Crédit pour participation à l’assemblée générale – section %{section}"
-      section_advertising_fee: "Contribution à la promotion et à la publicité – section %{section}"
       section_base_fee_berufsmitglied: "Adhésion membre professionnel – section %{section}"
       section_base_fee_berufsmitgliedplus: "Adhésion membre professionnel Plus – section %{section}"
       section_base_fee_partnermitglied: "Taxe de base fixe des membres partenaires – section %{section}"
