@@ -158,13 +158,19 @@ describe Invoice::BatchCreate do
     end
   end
 
-  context "a member of a section invoicing its members itself" do
+  context "a member of a section invoicing its section fees itself" do
     let!(:person) { member(zentralschweiz, full_time_employee_count: 5) }
 
     before { create_invoices }
 
-    it "receives no invoice at all, not even for the umbrella organisation" do
-      expect(invoice_run.invoices.find_by(recipient: person)).to be_nil
+    it "is only charged the fees of the umbrella organisation" do
+      expect(items_of(person).map(&:name)).to contain_exactly(
+        "Fixe Grundtaxe Aktivmitglieder (inkl. Geschäftsinhaber) 3 und mehr Mitarbeiter",
+        "PR-Beitrag fixe Grundtaxe Aktivmitglieder 3 und mehr Mitarbeiter",
+        "Beitrag pro Angestellte 80 - 100 %",
+        "PR-Beitrag Angestellte",
+        "Abo Florist (integraler Bestandteil der Aktivmitgliedschaft)"
+      )
     end
   end
 

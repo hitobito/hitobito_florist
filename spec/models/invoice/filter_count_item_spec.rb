@@ -83,10 +83,10 @@ describe Invoice::FilterCountItem do
       expect(item.count).to eq 1
     end
 
-    it "ignores sections which invoice their members themselves" do
+    it "counts the members of sections which invoice their section fees themselves" do
       member(nordwestschweiz)
       member(aargau)
-      expect(item.count).to eq 1
+      expect(item.count).to eq 2
     end
 
     it "ignores people who are not among the recipients" do

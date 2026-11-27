@@ -31,7 +31,6 @@ aargau:
   section_branch_fee: 50
   section_credit_gv_visit: -100
   section_fee_account: '2291'
-  exclude_from_yearly_membership_invoicing: false
 nordwestschweiz:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:nordwestschweiz)%>"
@@ -39,16 +38,15 @@ nordwestschweiz:
   rgt: 11
   name: Nordwestschweiz
   type: Group::Sektion
-  section_aktivmitglied_base_fee: 100
-  section_berufsmitglied_base_fee: 50
+  section_aktivmitglied_base_fee: 0
+  section_berufsmitglied_base_fee: 0
   section_partnermitglied_base_fee: 0
   section_passivmitglied_base_fee: 0
-  section_full_time_employee_fee: 40
-  section_part_time_employee_fee: 20
-  section_branch_fee: 20
+  section_full_time_employee_fee: 0
+  section_part_time_employee_fee: 0
+  section_branch_fee: 0
   section_credit_gv_visit: 0
   section_fee_account: '2292'
-  exclude_from_yearly_membership_invoicing: true
 mittelland_wallis:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:mittelland_wallis)%>"
@@ -65,7 +63,6 @@ mittelland_wallis:
   section_branch_fee: 0
   section_credit_gv_visit: -100
   section_fee_account: '2293'
-  exclude_from_yearly_membership_invoicing: false
 zentralschweiz:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:zentralschweiz)%>"
@@ -73,16 +70,15 @@ zentralschweiz:
   rgt: 19
   name: Zentralschweiz
   type: Group::Sektion
-  section_aktivmitglied_base_fee: 220
-  section_berufsmitglied_base_fee: 50
-  section_partnermitglied_base_fee: 50
-  section_passivmitglied_base_fee: 50
-  section_full_time_employee_fee: 40
-  section_part_time_employee_fee: 25
-  section_branch_fee: 60
-  section_credit_gv_visit: -50
+  section_aktivmitglied_base_fee: 0
+  section_berufsmitglied_base_fee: 0
+  section_partnermitglied_base_fee: 0
+  section_passivmitglied_base_fee: 0
+  section_full_time_employee_fee: 0
+  section_part_time_employee_fee: 0
+  section_branch_fee: 0
+  section_credit_gv_visit: 0
   section_fee_account: '2294'
-  exclude_from_yearly_membership_invoicing: true
 ostschweiz:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:ostschweiz)%>"
@@ -99,7 +95,6 @@ ostschweiz:
   section_branch_fee: 0
   section_credit_gv_visit: -50
   section_fee_account: '2295'
-  exclude_from_yearly_membership_invoicing: false
 zuerich:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:zuerich)%>"
@@ -116,7 +111,6 @@ zuerich:
   section_branch_fee: 50
   section_credit_gv_visit: -50
   section_fee_account: '2296'
-  exclude_from_yearly_membership_invoicing: false
 ticino:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:ticino)%>"
@@ -133,7 +127,6 @@ ticino:
   section_branch_fee: 50
   section_credit_gv_visit: 0
   section_fee_account: '2297'
-  exclude_from_yearly_membership_invoicing: false
 suisse_romande:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:suisse_romande)%>"
@@ -150,7 +143,6 @@ suisse_romande:
   section_branch_fee: 50
   section_credit_gv_visit: -50
   section_fee_account: '2298'
-  exclude_from_yearly_membership_invoicing: false
 kontakte:
   parent: root
   layer_group_id: "<%=ActiveRecord::FixtureSet.identify(:root)%>"

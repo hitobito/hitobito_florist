@@ -30,20 +30,18 @@ section_fees = {
     section_part_time_employee_fee: 25,
     section_branch_fee: 50,
     section_credit_gv_visit: -100,
-    section_fee_account: "2291",
-    exclude_from_yearly_membership_invoicing: false
+    section_fee_account: "2291"
   },
   "Nordwestschweiz" => {
-    section_aktivmitglied_base_fee: 100,
-    section_berufsmitglied_base_fee: 50,
+    section_aktivmitglied_base_fee: 0,
+    section_berufsmitglied_base_fee: 0,
     section_partnermitglied_base_fee: 0,
     section_passivmitglied_base_fee: 0,
-    section_full_time_employee_fee: 40,
-    section_part_time_employee_fee: 20,
-    section_branch_fee: 20,
+    section_full_time_employee_fee: 0,
+    section_part_time_employee_fee: 0,
+    section_branch_fee: 0,
     section_credit_gv_visit: 0,
-    section_fee_account: "2292",
-    exclude_from_yearly_membership_invoicing: true
+    section_fee_account: "2292"
   },
   "Mittelland/Wallis" => {
     section_aktivmitglied_base_fee: 200,
@@ -54,20 +52,18 @@ section_fees = {
     section_part_time_employee_fee: 20,
     section_branch_fee: 0,
     section_credit_gv_visit: -100,
-    section_fee_account: "2293",
-    exclude_from_yearly_membership_invoicing: false
+    section_fee_account: "2293"
   },
   "Zentralschweiz" => {
-    section_aktivmitglied_base_fee: 220,
-    section_berufsmitglied_base_fee: 50,
-    section_partnermitglied_base_fee: 50,
-    section_passivmitglied_base_fee: 50,
-    section_full_time_employee_fee: 40,
-    section_part_time_employee_fee: 25,
-    section_branch_fee: 60,
-    section_credit_gv_visit: -50,
-    section_fee_account: "2294",
-    exclude_from_yearly_membership_invoicing: true
+    section_aktivmitglied_base_fee: 0,
+    section_berufsmitglied_base_fee: 0,
+    section_partnermitglied_base_fee: 0,
+    section_passivmitglied_base_fee: 0,
+    section_full_time_employee_fee: 0,
+    section_part_time_employee_fee: 0,
+    section_branch_fee: 0,
+    section_credit_gv_visit: 0,
+    section_fee_account: "2294"
   },
   "Ostschweiz" => {
     section_aktivmitglied_base_fee: 150,
@@ -78,8 +74,7 @@ section_fees = {
     section_part_time_employee_fee: 15,
     section_branch_fee: 0,
     section_credit_gv_visit: -50,
-    section_fee_account: "2295",
-    exclude_from_yearly_membership_invoicing: false
+    section_fee_account: "2295"
   },
   "Zürich" => {
     section_aktivmitglied_base_fee: 150,
@@ -90,8 +85,7 @@ section_fees = {
     section_part_time_employee_fee: 20,
     section_branch_fee: 50,
     section_credit_gv_visit: -50,
-    section_fee_account: "2296",
-    exclude_from_yearly_membership_invoicing: false
+    section_fee_account: "2296"
   },
   "Ticino" => {
     section_aktivmitglied_base_fee: 100,
@@ -102,8 +96,7 @@ section_fees = {
     section_part_time_employee_fee: 20,
     section_branch_fee: 50,
     section_credit_gv_visit: 0,
-    section_fee_account: "2297",
-    exclude_from_yearly_membership_invoicing: false
+    section_fee_account: "2297"
   },
   "Suisse Romande" => {
     section_aktivmitglied_base_fee: 255,
@@ -114,8 +107,7 @@ section_fees = {
     section_part_time_employee_fee: 25,
     section_branch_fee: 50,
     section_credit_gv_visit: -50,
-    section_fee_account: "2298",
-    exclude_from_yearly_membership_invoicing: false
+    section_fee_account: "2298"
   }
 }
 

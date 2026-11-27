@@ -52,6 +52,5 @@ class Invoice::FilterCountItem < Invoice::PeriodItem
     Role.with_inactive
       .where(roles[:start_on].lteq(start_on).or(roles[:start_on].eq(nil)))
       .where(roles[:end_on].gteq(end_on).or(roles[:end_on].eq(nil)))
-      .where(groups: {exclude_from_yearly_membership_invoicing: false})
   end
 end
