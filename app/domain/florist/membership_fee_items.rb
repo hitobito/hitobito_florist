@@ -42,9 +42,7 @@ class Florist::MembershipFeeItems
   end
 
   def sections
-    @group.self_and_descendants
-      .where(type: Group::Sektion.sti_name, exclude_from_yearly_membership_invoicing: false)
-      .order(:lft)
+    @group.self_and_descendants.where(type: Group::Sektion.sti_name).order(:lft)
   end
 
   def definitions(key)

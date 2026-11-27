@@ -41,8 +41,7 @@ describe PeriodInvoiceTemplate::FeeCalculationItem do
 
   describe "#to_invoice_item_for_people" do
     it "generates the items of the umbrella organisation and of every invoiced section" do
-      # 20 items of the Dachverband, plus the items with a non zero unit cost of the six
-      # sections which do not invoice their members themselves
+      # 20 items of the Dachverband, plus the items with a non zero unit cost of the sections
       expect(generated.size).to eq 71
     end
 
@@ -113,7 +112,7 @@ describe PeriodInvoiceTemplate::FeeCalculationItem do
         expect(groups(:mittelland_wallis).section_branch_fee).to eq 0
       end
 
-      it "skips the sections which invoice their members themselves" do
+      it "skips the sections which invoice their section fees themselves" do
         [groups(:nordwestschweiz), groups(:zentralschweiz)].each do |section|
           expect(generated.map(&:name)).not_to include(/#{section.name}/)
           expect(generated.map(&:section_id)).not_to include(section.id)

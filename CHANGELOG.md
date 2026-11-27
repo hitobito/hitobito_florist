@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Mitglieder der Sektionen Nordwestschweiz und Zentralschweiz erhalten in der Sammelrechnung die Beiträge des Dachverbands, nur die Sektionsbeiträge versenden diese Sektionen selbst (hitobito_florist#21)
 * Berufsmitglieder plus mit Lehrlingsabo bezahlen in der Sammelrechnung im Start- und Folgejahr des Abos keine Beiträge und danach nur die Grundtaxe Berufsmitglieder plus (hitobito_florist#17)
 
 ## Version 2.11

@@ -36,12 +36,6 @@ describe Group::Sektion do
       expect(aargau.section_fee_account).to eq "2291"
     end
 
-    it "excludes the sections which invoice their members themselves" do
-      expect(groups(:nordwestschweiz)).to be_exclude_from_yearly_membership_invoicing
-      expect(groups(:zentralschweiz)).to be_exclude_from_yearly_membership_invoicing
-      expect(aargau).not_to be_exclude_from_yearly_membership_invoicing
-    end
-
     it "does not offer the attributes in the group UI" do
       expect(Group::Sektion.used_attributes)
         .not_to include(*Florist::Group::SECTION_FEE_ATTRS)
